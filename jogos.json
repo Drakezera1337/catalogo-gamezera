@@ -6,31 +6,10 @@
  },
  "jogos": [
   {
-   "id": "minecraft",
-   "nome": "Minecraft (Edição PlayStation 4)",
-   "preco": 100,
-   "qtd": 1,
-   "status": "disponivel"
-  },
-  {
    "id": "gta5",
    "nome": "GTA V",
    "preco": 100,
    "qtd": 3,
-   "status": "disponivel"
-  },
-  {
-   "id": "witcher3",
-   "nome": "The Witcher 3: Wild Hunt (Complete Edition)",
-   "preco": 100,
-   "qtd": 1,
-   "status": "disponivel"
-  },
-  {
-   "id": "overwatch",
-   "nome": "Overwatch (Origins Edition)",
-   "preco": 60,
-   "qtd": 1,
    "status": "disponivel"
   },
   {
@@ -41,15 +20,43 @@
    "status": "disponivel"
   },
   {
-   "id": "fifa18",
-   "nome": "FIFA 18",
+   "id": "gow",
+   "nome": "God of War (2018)",
    "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
   {
-   "id": "gow",
-   "nome": "God of War (2018)",
+   "id": "witcher3",
+   "nome": "The Witcher 3: Wild Hunt (Complete Edition)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "ghost",
+   "nome": "Ghost of Tsushima",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "minecraft",
+   "nome": "Minecraft (Edição PlayStation 4)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "ac-valhalla",
+   "nome": "Assassin's Creed Valhalla",
+   "preco": 120,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "fifa18",
+   "nome": "FIFA 18",
    "preco": 80,
    "qtd": 1,
    "status": "disponivel"
@@ -69,9 +76,9 @@
    "status": "disponivel"
   },
   {
-   "id": "ac-valhalla",
-   "nome": "Assassin's Creed Valhalla",
-   "preco": 120,
+   "id": "overwatch",
+   "nome": "Overwatch (Origins Edition)",
+   "preco": 60,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -85,13 +92,6 @@
   {
    "id": "cod-iw",
    "nome": "Call of Duty: Infinite Warfare",
-   "preco": 100,
-   "qtd": 1,
-   "status": "disponivel"
-  },
-  {
-   "id": "ghost",
-   "nome": "Ghost of Tsushima",
    "preco": 100,
    "qtd": 1,
    "status": "disponivel"
