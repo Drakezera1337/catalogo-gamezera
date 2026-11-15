@@ -398,8 +398,7 @@ input:focus,select:focus{border-color:var(--azul)}
       x.fillStyle="#0e1029"; x.fillRect(cx,cy,cw,ch);
       const im=imgs[i];
       if(im){
-        if(j.id==="minecraft"){ const s=Math.min((cw-24)/im.width,(ch-24)/im.height); x.drawImage(im,cx+(cw-im.width*s)/2,cy+(ch-im.height*s)/2,im.width*s,im.height*s); }
-        else { const s=Math.max(cw/im.width,ch/im.height), sw=cw/s, sh=ch/s; x.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,cx,cy,cw,ch); }
+        const s=Math.max(cw/im.width,ch/im.height), sw=cw/s, sh=ch/s; x.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,cx,cy,cw,ch);
       }
       x.restore();
       // selo PS4

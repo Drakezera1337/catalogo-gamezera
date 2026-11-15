@@ -226,7 +226,7 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
     else acao = `<button class="btn" data-rm="${j.id}">✓ Na lista</button>`;
     const selo = SELO[s] ? `<span class="status ${SELO[s][1]}">${SELO[s][0]}</span>` : "";
     return `<article class="card${q?" sel":""} st-${s}" data-id="${j.id}">
-      <div class="capa"><img src="${capa(j)}" alt="${esc(j.nome)}" loading="lazy" onerror="this.onerror=null;this.src='icon-512.png'"${j.id==="minecraft"?' class="contain"':""}>
+      <div class="capa"><img src="${capa(j)}" alt="${esc(j.nome)}" loading="lazy" onerror="this.onerror=null;this.src='icon-512.png'">
         <span class="selo">PS4</span>${s==="disponivel"&&j.qtd>1?`<span class="estq">${j.qtd} unidades</span>`:""}${selo}
         <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#062b14" stroke-width="3.5"><path d="m5 12 5 5 9-10"/></svg></span></div>
       <div class="corpo"><div class="nome">${esc(j.nome)}</div>${preco}${acao}</div></article>`;
