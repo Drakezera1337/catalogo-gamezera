@@ -135,6 +135,7 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
       <input id="busca" type="search" placeholder="Buscar jogo..." autocomplete="off">
     </label>
     <select id="ordem" aria-label="Ordenar">
+      <option value="pop">Mais vendidos</option>
       <option value="nome">A a Z</option>
       <option value="menor">Menor preço</option>
       <option value="maior">Maior preço</option>
@@ -187,6 +188,7 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
   const L = dados.loja, J = dados.jogos;
   const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0});
   const porId = Object.fromEntries(J.map(j=>[j.id,j]));
+  const pos = Object.fromEntries(J.map((j,i)=>[j.id,i])); // ordem do jogos.json = mais vendidos
   const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
   const st = j => j.status || "disponivel";
@@ -235,7 +237,7 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
     let r = J.filter(j => (!t || norm(j.nome).includes(t)) &&
       (faixa==="todos" || (faixa==="disp" ? st(j)==="disponivel" : faixa==="cheg" ? st(j)==="chegando" : String(j.preco)===faixa)));
     const pv = j => j.preco==null ? (o==="menor"?1e9:-1) : j.preco;
-    r.sort((a,b)=> (ORDEM_ST[st(a)]??0)-(ORDEM_ST[st(b)]??0) || (o==="menor" ? pv(a)-pv(b) : o==="maior" ? pv(b)-pv(a) : 0) || a.nome.localeCompare(b.nome));
+    r.sort((a,b)=> (ORDEM_ST[st(a)]??0)-(ORDEM_ST[st(b)]??0) || (o==="menor" ? pv(a)-pv(b) : o==="maior" ? pv(b)-pv(a) : o==="pop" ? pos[a.id]-pos[b.id] : 0) || a.nome.localeCompare(b.nome));
     return r;
   }
 

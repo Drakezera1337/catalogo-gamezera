@@ -51,6 +51,8 @@ input:focus,select:focus{border-color:var(--azul)}
 .nums label{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
 .nums input{width:88px;padding:7px 9px}
 .nums input.q{width:62px}
+.mover{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--mut);font-weight:700}
+.mover button{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;font-weight:800}
 .del{margin-left:auto;color:#ff6b8a;font-size:13px;font-weight:700;padding:6px}
 .sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .sts button{border:1px solid var(--line);border-radius:9px;padding:8px 4px;font-size:12px;font-weight:700;color:var(--mut)}
@@ -115,6 +117,7 @@ input:focus,select:focus{border-color:var(--azul)}
         <option value="chegando">Chegando</option>
       </select>
     </div>
+    <p style="color:var(--mut);font-size:12px;margin:2px 0 10px">A posição (1º, 2º…) é a ordem "Mais vendidos" do catálogo. Use ↑ ↓ para mudar.</p>
     <div id="lista"></div>
   </section>
   <p class="box" id="carregando">Carregando…</p>
@@ -211,6 +214,7 @@ input:focus,select:focus{border-color:var(--azul)}
         <div class="nums">
           <label>R$<input type="number" min="0" step="1" inputmode="numeric" value="${j.preco??""}" placeholder="Consultar" data-f="preco"></label>
           <label>Qtd<input class="q" type="number" min="0" step="1" inputmode="numeric" value="${j.qtd}" data-f="qtd"></label>
+          <span class="mover"><button data-mv="-1" title="Subir na ordem">↑</button><span>${dados.jogos.indexOf(j)+1}º</span><button data-mv="1" title="Descer na ordem">↓</button></span>
           <button class="del" data-del>Excluir</button>
         </div>
         <div class="sts">${ST.map(([v,t])=>`<button data-s="${v}" class="${s===v?"on":""}">${t}</button>`).join("")}</div>
@@ -233,7 +237,8 @@ input:focus,select:focus{border-color:var(--azul)}
   }
   function contarMudancas(){
     const o=JSON.parse(original).jogos, ids=new Set(dados.jogos.map(j=>j.id));
-    return dados.jogos.filter(j=>mudou(j)).length + o.filter(j=>!ids.has(j.id)).length;
+    const ordemMudou = o.filter(j=>ids.has(j.id)).map(j=>j.id).join() !== dados.jogos.filter(j=>o.some(x=>x.id===j.id)).map(j=>j.id).join();
+    return dados.jogos.filter(j=>mudou(j)).length + o.filter(j=>!ids.has(j.id)).length + (ordemMudou?1:0);
   }
   function atualizaItem(id){
     const el=document.querySelector(`.jogo[data-id="${CSS.escape(id)}"]`); if(!el) return;
@@ -255,6 +260,15 @@ input:focus,select:focus{border-color:var(--azul)}
     const id=el.dataset.id, j=dados.jogos.find(x=>x.id===id);
     const sb=e.target.closest("[data-s]");
     if (sb){ j.status=sb.dataset.s; el.querySelectorAll(".sts button").forEach(b=>b.classList.toggle("on",b===sb)); atualizaItem(id); return; }
+    const mv=e.target.closest("[data-mv]");
+    if (mv){
+      const a=dados.jogos.indexOf(j), b=a+(+mv.dataset.mv);
+      if (b<0||b>=dados.jogos.length) return;
+      [dados.jogos[a],dados.jogos[b]]=[dados.jogos[b],dados.jogos[a]];
+      render();
+      const novo=document.querySelector(`.jogo[data-id="${CSS.escape(id)}"]`); if(novo) novo.scrollIntoView({block:"center"});
+      return;
+    }
     if (e.target.closest("[data-del]")){
       if (!confirm(`Excluir "${j.nome}" do catálogo?\n\nDica: se o jogo foi vendido, prefira marcar "Vendido".`)) return;
       dados.jogos=dados.jogos.filter(x=>x.id!==id); delete capasNovas[id]; el.remove(); resumo();
@@ -292,9 +306,10 @@ input:focus,select:focus{border-color:var(--azul)}
     const preco=$("#nPreco").value===""?null:Math.max(0,Math.round(+$("#nPreco").value));
     const j={id,nome,preco,qtd:Math.max(0,Math.round(+$("#nQtd").value||0)),status:$("#nStatus").value};
     if($("#nCapa").files[0]){ try{ capasNovas[id]=await reduzir($("#nCapa").files[0]); j.v=Date.now(); }catch(e){ toast("Não consegui ler a imagem da capa.","erro"); return; } }
-    dados.jogos.unshift(j); $("#mNovo").classList.remove("on");
-    $("#busca").value=""; $("#filtro").value=""; render(); window.scrollTo({top:0,behavior:"smooth"});
-    toast(`"${nome}" adicionado. Toque em Publicar para enviar ao catálogo.`,"ok");
+    dados.jogos.push(j); $("#mNovo").classList.remove("on");
+    $("#busca").value=""; $("#filtro").value=""; render();
+    const el=document.querySelector(`.jogo[data-id="${CSS.escape(id)}"]`); if(el) el.scrollIntoView({block:"center",behavior:"smooth"});
+    toast(`"${nome}" adicionado no fim da lista. Use ↑ para subir a posição e depois toque em Publicar.`,"ok");
   };
 
   // ---------- publicar ----------
