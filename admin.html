@@ -104,6 +104,7 @@ input:focus,select:focus{border-color:var(--azul)}
     <div class="resumo" id="resumo"></div>
     <div class="linha" style="margin-bottom:4px">
       <button class="btn" id="novoBtn">+ Adicionar jogo</button>
+      <button class="btn2" id="fotoBtn">🖼️ Gerar foto com preços</button>
       <button class="btn2" id="qrBtn">📱 Abrir no celular</button>
       <button class="btn2" id="sair">Sair</button>
     </div>
@@ -149,6 +150,30 @@ input:focus,select:focus{border-color:var(--azul)}
         <button class="btn2" data-fechar>Cancelar</button>
         <button class="btn" id="nOk">Adicionar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- foto -->
+<div class="modal" id="mFoto">
+  <div class="box" style="max-width:560px;max-height:92vh;overflow-y:auto">
+    <h2>Foto do catálogo com preços</h2>
+    <div class="form">
+      <label>Formato<select id="fFormato">
+        <option value="20">Várias fotos de 20 jogos (tamanho de stories, lê bem no WhatsApp)</option>
+        <option value="12">Várias fotos de 12 jogos (capas maiores)</option>
+        <option value="0">Uma foto só com todos os jogos</option>
+      </select></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="fReserv" checked> Incluir jogos reservados</label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="fCheg" checked> Incluir jogos chegando</label>
+      <p style="margin:0;font-size:12px">Jogos vendidos não entram. A foto usa os dados que estão no painel agora.</p>
+      <button class="btn" id="fGerar">Gerar</button>
+      <div id="fPrev" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="linha" id="fAcoes" hidden>
+        <button class="btn" id="fShare" style="flex:1">Compartilhar</button>
+        <button class="btn2" id="fBaixar" style="flex:1">Baixar</button>
+      </div>
+      <div class="linha" style="justify-content:flex-end"><button class="btn2" data-fechar>Fechar</button></div>
     </div>
   </div>
 </div>
@@ -332,6 +357,110 @@ input:focus,select:focus{border-color:var(--azul)}
     }finally{ bt.disabled=false; bt.textContent="Publicar"; }
   };
   window.addEventListener("beforeunload",e=>{ if(dados&&contarMudancas()){ e.preventDefault(); e.returnValue=""; } });
+
+  // ---------- foto do catálogo ----------
+  let fotos = []; // [{blob,url,nome}]
+  const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0});
+  const carregaImg = src => new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>{ if(!i.dataset.fb){ i.dataset.fb=1; i.src="icon-512.png"; } else ok(null); }; i.src=src; });
+  function rr(x,X,Y,w,h,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+w,Y,X+w,Y+h,r); x.arcTo(X+w,Y+h,X,Y+h,r); x.arcTo(X,Y+h,X,Y,r); x.arcTo(X,Y,X+w,Y,r); x.closePath(); }
+  function linhas(x,txt,max,n){
+    const pal=txt.split(" "), out=[]; let l="";
+    for(const p of pal){ const t=l?l+" "+p:p; if(x.measureText(t).width<=max) l=t; else { if(l) out.push(l); l=p; } }
+    if(l) out.push(l);
+    if(out.length>n){ out.length=n; let u=out[n-1]; while(x.measureText(u+"…").width>max && u.length) u=u.slice(0,-1); out[n-1]=u.trimEnd()+"…"; }
+    return out;
+  }
+
+  async function desenhar(jogos, pag, totPag, totJogos, cols){
+    const W=1080, M=36, G=18, cw=(W-2*M-(cols-1)*G)/cols, f=cw/187, ch=cw*4/3;
+    const nomeH=Math.round(44*f), precoH=Math.round(40*f), cardH=ch+nomeH+precoH+Math.round(14*f);
+    const rows=Math.ceil(jogos.length/cols), topo=250, rodape=150;
+    const H=topo+rows*cardH+(rows-1)*G+rodape;
+    const c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
+    // fundo
+    x.fillStyle="#0b0d1f"; x.fillRect(0,0,W,H);
+    const g=x.createRadialGradient(W/2,-120,40,W/2,-120,900); g.addColorStop(0,"#262c7a"); g.addColorStop(1,"rgba(11,13,31,0)");
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    // topo
+    const logo=await carregaImg("logo.png");
+    if(logo){ const lh=150, lw=logo.width*lh/logo.height; x.drawImage(logo,(W-lw)/2,18,lw,lh); }
+    x.textAlign="center"; x.textBaseline="alphabetic";
+    x.font="italic 900 52px Montserrat"; const tg=x.createLinearGradient(W/2-220,0,W/2+220,0);
+    tg.addColorStop(0,"#33d6ff"); tg.addColorStop(.45,"#2f8cff"); tg.addColorStop(1,"#9b4dff"); x.fillStyle=tg;
+    x.fillText("CATÁLOGO PS4",W/2,212);
+    x.font="500 22px Montserrat"; x.fillStyle="#9aa0c8";
+    x.fillText(`Mídia física · ${totJogos} jogos${totPag>1?` · foto ${pag} de ${totPag}`:""}`,W/2,240);
+    // capas
+    const imgs=await Promise.all(jogos.map(j=>carregaImg(capasNovas[j.id]?"data:image/jpeg;base64,"+capasNovas[j.id]:`capas/${j.id}.jpg${j.v?"?v="+j.v:""}`)));
+    jogos.forEach((j,i)=>{
+      const cx=M+(i%cols)*(cw+G), cy=topo+Math.floor(i/cols)*(cardH+G), r=14*f;
+      x.save(); rr(x,cx,cy,cw,cardH,r); x.fillStyle="#161a38"; x.fill(); x.strokeStyle="#262b55"; x.lineWidth=2; x.stroke(); x.clip();
+      x.fillStyle="#0e1029"; x.fillRect(cx,cy,cw,ch);
+      const im=imgs[i];
+      if(im){
+        if(j.id==="minecraft"){ const s=Math.min((cw-24)/im.width,(ch-24)/im.height); x.drawImage(im,cx+(cw-im.width*s)/2,cy+(ch-im.height*s)/2,im.width*s,im.height*s); }
+        else { const s=Math.max(cw/im.width,ch/im.height), sw=cw/s, sh=ch/s; x.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,cx,cy,cw,ch); }
+      }
+      x.restore();
+      // selo PS4
+      x.fillStyle="#003791"; rr(x,cx+8*f,cy+8*f,44*f,22*f,5*f); x.fill();
+      x.fillStyle="#fff"; x.font=`800 ${13*f}px Montserrat`; x.textAlign="center"; x.fillText("PS4",cx+30*f,cy+24*f);
+      const s=j.status||"disponivel";
+      if(s==="reservado"||s==="chegando"){
+        x.fillStyle=s==="reservado"?"#ffb020":"#2f8cff"; rr(x,cx+8*f,cy+ch-38*f,cw-16*f,30*f,7*f); x.fill();
+        x.fillStyle=s==="reservado"?"#2a1a00":"#fff"; x.font=`800 ${14*f}px Montserrat`;
+        x.fillText(s==="reservado"?"RESERVADO":"CHEGANDO",cx+cw/2,cy+ch-18*f);
+      } else if(j.qtd>1){
+        x.fillStyle="rgba(0,0,0,.75)"; rr(x,cx+cw-92*f,cy+8*f,84*f,22*f,5*f); x.fill();
+        x.fillStyle="#fff"; x.font=`700 ${12*f}px Montserrat`; x.fillText(`${j.qtd} unidades`,cx+cw-50*f,cy+23*f);
+      }
+      // nome
+      x.textAlign="left"; x.fillStyle="#eef0ff"; x.font=`700 ${15*f}px Montserrat`;
+      linhas(x,j.nome,cw-20*f,2).forEach((l,k)=>x.fillText(l,cx+10*f,cy+ch+22*f+k*18*f));
+      // preço
+      if(j.preco!=null){ x.fillStyle="#33d6ff"; x.font=`800 ${27*f}px Montserrat`; x.fillText(brl(j.preco),cx+10*f,cy+cardH-14*f); }
+      else { x.fillStyle="#9aa0c8"; x.font=`700 ${19*f}px Montserrat`; x.fillText("Consultar",cx+10*f,cy+cardH-16*f); }
+    });
+    // rodapé
+    const fy=H-rodape+30;
+    x.textAlign="center";
+    x.fillStyle="#25d366"; rr(x,W/2-330,fy,660,62,16); x.fill();
+    x.fillStyle="#062b14"; x.font="800 28px Montserrat"; x.fillText("Peça pelo WhatsApp (22) 99608-4127",W/2,fy+41);
+    x.fillStyle="#9aa0c8"; x.font="600 20px Montserrat";
+    x.fillText("@gamezeraofc  ·  drakezera1337.github.io/catalogo-gamezera",W/2,fy+100);
+    return new Promise(ok=>c.toBlob(ok,"image/jpeg",0.92));
+  }
+
+  $("#fotoBtn").onclick=()=>{ $("#fPrev").innerHTML=""; $("#fAcoes").hidden=true; abrir("#mFoto"); };
+  $("#fGerar").onclick=async()=>{
+    const bt=$("#fGerar"); bt.disabled=true; bt.textContent="Gerando…";
+    try{
+      await Promise.all(["italic 900 52px Montserrat","800 28px Montserrat","700 15px Montserrat","500 22px Montserrat","600 20px Montserrat"].map(f=>document.fonts.load(f)));
+      const ok={disponivel:true, reservado:$("#fReserv").checked, chegando:$("#fCheg").checked, vendido:false};
+      const ordemSt={disponivel:0,chegando:1,reservado:2};
+      const lista=dados.jogos.map((j,i)=>({j,i})).filter(({j})=>ok[j.status||"disponivel"])
+        .sort((a,b)=>(ordemSt[a.j.status||"disponivel"]-ordemSt[b.j.status||"disponivel"])||a.i-b.i).map(o=>o.j);
+      if(!lista.length){ toast("Nenhum jogo para mostrar.","erro"); return; }
+      const por=+$("#fFormato").value||lista.length, cols=por===12?4:5;
+      const pags=[]; for(let i=0;i<lista.length;i+=por) pags.push(lista.slice(i,i+por));
+      fotos.forEach(f=>URL.revokeObjectURL(f.url)); fotos=[];
+      for(let p=0;p<pags.length;p++){
+        const blob=await desenhar(pags[p],p+1,pags.length,lista.length,cols);
+        fotos.push({blob,url:URL.createObjectURL(blob),nome:`catalogo-gamezera${pags.length>1?"-"+(p+1):""}.jpg`});
+      }
+      $("#fPrev").innerHTML=fotos.map(f=>`<img src="${f.url}" style="width:100%;border-radius:10px;border:1px solid var(--line)">`).join("");
+      $("#fAcoes").hidden=false;
+      $("#fShare").hidden=!(navigator.canShare && navigator.canShare({files:[new File([fotos[0].blob],fotos[0].nome,{type:"image/jpeg"})]}));
+    }catch(e){ toast("Erro ao gerar a foto: "+e.message,"erro"); }
+    finally{ bt.disabled=false; bt.textContent="Gerar"; }
+  };
+  $("#fBaixar").onclick=async()=>{
+    for(const f of fotos){ const a=document.createElement("a"); a.href=f.url; a.download=f.nome; document.body.appendChild(a); a.click(); a.remove(); await new Promise(r=>setTimeout(r,400)); }
+  };
+  $("#fShare").onclick=async()=>{
+    try{ await navigator.share({files:fotos.map(f=>new File([f.blob],f.nome,{type:"image/jpeg"})),title:"Catálogo Gamezera"}); }
+    catch(e){ if(e.name!=="AbortError") toast("Não deu para compartilhar. Use Baixar.","erro"); }
+  };
 
   // ---------- login / QR ----------
   $("#qrBtn").onclick=()=>{
