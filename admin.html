@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel Gamezera</title>
+<meta name="theme-color" content="#0b0d1f">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,800;1,900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d1f;--bg2:#12152e;--card:#161a38;--line:#262b55;--txt:#eef0ff;--mut:#9aa0c8;
+  --azul:#2f8cff;--roxo:#9b4dff;--ciano:#33d6ff;--verde:#25d366;--verm:#e0244f;--amar:#ffb020}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:Montserrat,system-ui,sans-serif;min-height:100vh;padding-bottom:100px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select{font:inherit;color:var(--txt);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;font-size:15px}
+input:focus,select:focus{border-color:var(--azul)}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+.topo{display:flex;align-items:center;gap:12px;padding:16px 0}
+.topo img{width:56px;height:auto}
+.topo h1{font-size:20px;font-weight:900;font-style:italic;flex:1}
+.topo h1 small{display:block;font-size:12px;font-style:normal;font-weight:500;color:var(--mut)}
+.lnk{font-size:13px;font-weight:700;color:var(--ciano);text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:8px 10px;white-space:nowrap}
+.btn{border-radius:10px;padding:11px 16px;font-weight:800;font-size:14px;background:linear-gradient(90deg,var(--azul),var(--roxo));color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+.btn2{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:12px 0}
+.box h2{font-size:17px;margin-bottom:10px}
+.box p{color:var(--mut);font-size:14px;line-height:1.5;margin-bottom:10px}
+.box a{color:var(--ciano)}
+.linha{display:flex;gap:10px;flex-wrap:wrap}
+.linha input{flex:1 1 220px}
+.resumo{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+.resumo span{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--mut)}
+.resumo b{color:var(--txt)}
+.filtros{display:flex;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0}
+.filtros input{flex:1 1 200px}
+.jogo{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.jogo.mudou{border-color:var(--amar)}
+.jogo.novo{border-color:var(--verde)}
+.thumb{position:relative;width:64px;height:86px;border-radius:8px;overflow:hidden;background:#0e1029}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb label{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.7);font-size:10px;font-weight:700;text-align:center;padding:3px 0;cursor:pointer}
+.thumb input{display:none}
+.campos{display:flex;flex-direction:column;gap:8px;min-width:0}
+.campos .nome{width:100%;font-weight:700}
+.nums{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nums label{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.nums input{width:88px;padding:7px 9px}
+.nums input.q{width:62px}
+.del{margin-left:auto;color:#ff6b8a;font-size:13px;font-weight:700;padding:6px}
+.sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.sts button{border:1px solid var(--line);border-radius:9px;padding:8px 4px;font-size:12px;font-weight:700;color:var(--mut)}
+.sts button.on[data-s=disponivel]{background:var(--verde);border-color:var(--verde);color:#062b14}
+.sts button.on[data-s=reservado]{background:var(--amar);border-color:var(--amar);color:#2a1a00}
+.sts button.on[data-s=vendido]{background:var(--verm);border-color:var(--verm);color:#fff}
+.sts button.on[data-s=chegando]{background:var(--azul);border-color:var(--azul);color:#fff}
+@media (max-width:420px){.sts button{font-size:11px}}
+.barra{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(11,13,31,.96);border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;justify-content:center}
+.barra .wrap{display:flex;align-items:center;gap:12px;width:100%;padding:0}
+.barra .msg{flex:1;font-size:14px;color:var(--mut)}
+.barra .msg b{color:var(--txt)}
+.toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:60;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;max-width:92vw;box-shadow:0 10px 30px rgba(0,0,0,.5);display:none}
+.toast.ok{border-color:var(--verde)}.toast.erro{border-color:var(--verm)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}
+.modal .box{max-width:420px;width:100%;margin:0}
+.form{display:flex;flex-direction:column;gap:10px}
+.form label{font-size:13px;color:var(--mut);display:flex;flex-direction:column;gap:5px}
+.qr{background:#fff;padding:12px;border-radius:12px;width:max-content;margin:8px auto}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+  <div class="topo">
+    <img src="logo.png" alt="">
+    <h1>Painel Gamezera<small>Edite o catálogo e publique</small></h1>
+    <a class="lnk" href="./" target="_blank" rel="noopener">Ver catálogo ↗</a>
+  </div>
+
+  <!-- login -->
+  <section class="box" id="login" hidden>
+    <h2>Entrar no painel</h2>
+    <p>Para salvar as alterações no catálogo, o painel precisa de um <b>token do GitHub</b> deste projeto.
+      <a href="https://github.com/settings/tokens/new?scopes=public_repo&description=Catalogozera%20(painel)" target="_blank" rel="noopener">Criar o token (já vem preenchido)</a>.
+      Escolha a validade <b>"No expiration"</b>, clique em <b>Generate token</b> e cole aqui.</p>
+    <div class="linha">
+      <input id="tokenIn" type="password" placeholder="ghp_..." autocomplete="off">
+      <button class="btn" id="entrar">Entrar</button>
+    </div>
+  </section>
+
+  <!-- painel -->
+  <section id="painel" hidden>
+    <div class="resumo" id="resumo"></div>
+    <div class="linha" style="margin-bottom:4px">
+      <button class="btn" id="novoBtn">+ Adicionar jogo</button>
+      <button class="btn2" id="qrBtn">📱 Abrir no celular</button>
+      <button class="btn2" id="sair">Sair</button>
+    </div>
+    <div class="filtros">
+      <input id="busca" type="search" placeholder="Buscar jogo...">
+      <select id="filtro">
+        <option value="">Todos os status</option>
+        <option value="disponivel">Disponível</option>
+        <option value="reservado">Reservado</option>
+        <option value="vendido">Vendido</option>
+        <option value="chegando">Chegando</option>
+      </select>
+    </div>
+    <div id="lista"></div>
+  </section>
+  <p class="box" id="carregando">Carregando…</p>
+</div>
+
+<div class="barra" id="barra" hidden>
+  <div class="wrap">
+    <div class="msg" id="barraMsg"></div>
+    <button class="btn2" id="desfazer">Desfazer</button>
+    <button class="btn" id="publicar">Publicar</button>
+  </div>
+</div>
+
+<!-- novo jogo -->
+<div class="modal" id="mNovo">
+  <div class="box">
+    <h2>Adicionar jogo</h2>
+    <div class="form">
+      <label>Nome do jogo<input id="nNome" placeholder="Ex.: God of War Ragnarök"></label>
+      <div class="linha">
+        <label style="flex:1">Preço (R$)<input id="nPreco" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label style="flex:1">Quantidade<input id="nQtd" type="number" min="0" step="1" value="1" inputmode="numeric"></label>
+      </div>
+      <label>Status<select id="nStatus">
+        <option value="disponivel">Disponível</option><option value="chegando">Chegando</option>
+        <option value="reservado">Reservado</option><option value="vendido">Vendido</option></select></label>
+      <label>Capa (foto)<input id="nCapa" type="file" accept="image/*"></label>
+      <div class="linha" style="justify-content:flex-end">
+        <button class="btn2" data-fechar>Cancelar</button>
+        <button class="btn" id="nOk">Adicionar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QR -->
+<div class="modal" id="mQr">
+  <div class="box" style="text-align:center">
+    <h2>Abrir o painel no celular</h2>
+    <p>Aponte a câmera do celular para o código. O painel já abre conectado, sem precisar colar o token.</p>
+    <div class="qr" id="qr"></div>
+    <p style="font-size:12px">Não mostre esse código para outras pessoas: ele dá acesso para editar o catálogo.</p>
+    <button class="btn2" data-fechar>Fechar</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  const DONO="Drakezera1337", REPO="catalogo-gamezera", RAMO="main";
+  const API=`https://api.github.com/repos/${DONO}/${REPO}`;
+  const CHAVE="gz_admin_token";
+  const ST = [["disponivel","Disponível"],["reservado","Reservado"],["vendido","Vendido"],["chegando","Chegando"]];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+  let token="", original=null, dados=null, capasNovas={}; // capasNovas[id] = base64 jpg
+  const ls = { get:k=>{try{return localStorage.getItem(k)||""}catch(e){return ""}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}, del:k=>{try{localStorage.removeItem(k)}catch(e){}} };
+
+  function toast(t,tipo){ const el=$("#toast"); el.textContent=t; el.className="toast "+(tipo||""); el.style.display="block"; clearTimeout(toast.t); toast.t=setTimeout(()=>el.style.display="none", tipo==="erro"?7000:4000); }
+
+  async function gh(path, opt={}){
+    const r = await fetch(API+path, {...opt, headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github+json",...(opt.body?{"Content-Type":"application/json"}:{})}, cache:"no-store"});
+    if (r.status===404 && opt.permite404) return null;
+    if (!r.ok) { const e=new Error((await r.json().catch(()=>({}))).message||r.statusText); e.status=r.status; throw e; }
+    return r.json();
+  }
+  const b64enc = str => { const b=new TextEncoder().encode(str); let s=""; for(let i=0;i<b.length;i+=0x8000) s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000)); return btoa(s); };
+  const b64dec = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g,"")),c=>c.charCodeAt(0)));
+
+  async function carregar(){
+    const f = await gh(`/contents/jogos.json?ref=${RAMO}`);
+    original = b64dec(f.content);
+    dados = JSON.parse(original);
+    capasNovas = {};
+    render();
+  }
+
+  // ---------- tela ----------
+  function mudou(j){
+    const o = JSON.parse(original).jogos.find(x=>x.id===j.id);
+    if (!o) return "novo";
+    return (o.nome!==j.nome || o.preco!==j.preco || o.qtd!==j.qtd || (o.status||"disponivel")!==(j.status||"disponivel") || capasNovas[j.id]) ? "mudou" : "";
+  }
+  function capaSrc(j){ return capasNovas[j.id] ? "data:image/jpeg;base64,"+capasNovas[j.id] : `capas/${j.id}.jpg${j.v?"?v="+j.v:""}`; }
+
+  function itemHTML(j){
+    const s=j.status||"disponivel";
+    return `<div class="jogo ${mudou(j)}" data-id="${j.id}">
+      <div class="thumb"><img src="${capaSrc(j)}" alt="" onerror="this.onerror=null;this.src='icon-192.png'"><label>Trocar<input type="file" accept="image/*" data-capa></label></div>
+      <div class="campos">
+        <input class="nome" value="${esc(j.nome)}" data-f="nome" aria-label="Nome">
+        <div class="nums">
+          <label>R$<input type="number" min="0" step="1" inputmode="numeric" value="${j.preco??""}" placeholder="Consultar" data-f="preco"></label>
+          <label>Qtd<input class="q" type="number" min="0" step="1" inputmode="numeric" value="${j.qtd}" data-f="qtd"></label>
+          <button class="del" data-del>Excluir</button>
+        </div>
+        <div class="sts">${ST.map(([v,t])=>`<button data-s="${v}" class="${s===v?"on":""}">${t}</button>`).join("")}</div>
+      </div></div>`;
+  }
+
+  function render(){
+    const t=norm($("#busca").value.trim()), f=$("#filtro").value;
+    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(j.status||"disponivel")===f));
+    $("#lista").innerHTML = lista.length ? lista.map(itemHTML).join("") : `<p class="box">Nenhum jogo.</p>`;
+    resumo();
+  }
+  function resumo(){
+    const c={disponivel:0,reservado:0,vendido:0,chegando:0};
+    dados.jogos.forEach(j=>c[j.status||"disponivel"]++);
+    $("#resumo").innerHTML = `<span><b>${dados.jogos.length}</b> jogos</span>`+ST.map(([v,t])=>`<span>${t}: <b>${c[v]}</b></span>`).join("");
+    const n = contarMudancas();
+    $("#barra").hidden = n===0;
+    $("#barraMsg").innerHTML = `<b>${n}</b> ${n===1?"alteração":"alterações"} não publicada${n===1?"":"s"}`;
+  }
+  function contarMudancas(){
+    const o=JSON.parse(original).jogos, ids=new Set(dados.jogos.map(j=>j.id));
+    return dados.jogos.filter(j=>mudou(j)).length + o.filter(j=>!ids.has(j.id)).length;
+  }
+  function atualizaItem(id){
+    const el=document.querySelector(`.jogo[data-id="${CSS.escape(id)}"]`); if(!el) return;
+    el.classList.remove("mudou","novo"); const m=mudou(dados.jogos.find(j=>j.id===id)); if(m) el.classList.add(m);
+    resumo();
+  }
+
+  // ---------- edição ----------
+  $("#lista").addEventListener("input",e=>{
+    const f=e.target.dataset.f; if(!f) return;
+    const id=e.target.closest(".jogo").dataset.id, j=dados.jogos.find(x=>x.id===id);
+    if (f==="nome") j.nome=e.target.value;
+    else if (f==="preco") j.preco = e.target.value==="" ? null : Math.max(0,Math.round(+e.target.value));
+    else if (f==="qtd") j.qtd = Math.max(0,Math.round(+e.target.value||0));
+    atualizaItem(id);
+  });
+  $("#lista").addEventListener("click",e=>{
+    const el=e.target.closest(".jogo"); if(!el) return;
+    const id=el.dataset.id, j=dados.jogos.find(x=>x.id===id);
+    const sb=e.target.closest("[data-s]");
+    if (sb){ j.status=sb.dataset.s; el.querySelectorAll(".sts button").forEach(b=>b.classList.toggle("on",b===sb)); atualizaItem(id); return; }
+    if (e.target.closest("[data-del]")){
+      if (!confirm(`Excluir "${j.nome}" do catálogo?\n\nDica: se o jogo foi vendido, prefira marcar "Vendido".`)) return;
+      dados.jogos=dados.jogos.filter(x=>x.id!==id); delete capasNovas[id]; el.remove(); resumo();
+    }
+  });
+  $("#lista").addEventListener("change",async e=>{
+    if(!e.target.matches("[data-capa]")||!e.target.files[0]) return;
+    const id=e.target.closest(".jogo").dataset.id;
+    try { capasNovas[id]=await reduzir(e.target.files[0]); } catch(err){ toast("Não consegui ler essa imagem.","erro"); return; }
+    e.target.closest(".jogo").querySelector(".thumb img").src="data:image/jpeg;base64,"+capasNovas[id];
+    atualizaItem(id);
+  });
+  $("#busca").addEventListener("input",render);
+  $("#filtro").addEventListener("change",render);
+  $("#desfazer").onclick=()=>{ if(confirm("Descartar todas as alterações não publicadas?")){ dados=JSON.parse(original); capasNovas={}; render(); } };
+
+  function reduzir(file){
+    return new Promise((ok,erro)=>{
+      const img=new Image(), url=URL.createObjectURL(file);
+      img.onload=()=>{ const w=360, h=Math.round(img.height*w/img.width), c=document.createElement("canvas"); c.width=w; c.height=h;
+        const x=c.getContext("2d"); x.fillStyle="#12152e"; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
+        ok(c.toDataURL("image/jpeg",0.82).split(",")[1]); };
+      img.onerror=erro; img.src=url;
+    });
+  }
+
+  // ---------- novo jogo ----------
+  const abrir = m => $(m).classList.add("on");
+  document.querySelectorAll("[data-fechar]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("on"));
+  $("#novoBtn").onclick=()=>{ ["#nNome","#nPreco","#nCapa"].forEach(s=>$(s).value=""); $("#nQtd").value=1; $("#nStatus").value="disponivel"; abrir("#mNovo"); $("#nNome").focus(); };
+  $("#nOk").onclick=async()=>{
+    const nome=$("#nNome").value.trim(); if(!nome){ toast("Digite o nome do jogo.","erro"); return; }
+    let base=norm(nome).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"jogo", id=base, i=2;
+    while(dados.jogos.some(j=>j.id===id)) id=base+"-"+(i++);
+    const preco=$("#nPreco").value===""?null:Math.max(0,Math.round(+$("#nPreco").value));
+    const j={id,nome,preco,qtd:Math.max(0,Math.round(+$("#nQtd").value||0)),status:$("#nStatus").value};
+    if($("#nCapa").files[0]){ try{ capasNovas[id]=await reduzir($("#nCapa").files[0]); j.v=Date.now(); }catch(e){ toast("Não consegui ler a imagem da capa.","erro"); return; } }
+    dados.jogos.unshift(j); $("#mNovo").classList.remove("on");
+    $("#busca").value=""; $("#filtro").value=""; render(); window.scrollTo({top:0,behavior:"smooth"});
+    toast(`"${nome}" adicionado. Toque em Publicar para enviar ao catálogo.`,"ok");
+  };
+
+  // ---------- publicar ----------
+  $("#publicar").onclick=async()=>{
+    const bt=$("#publicar"); bt.disabled=true; bt.textContent="Publicando…";
+    try{
+      for (const [id,b64] of Object.entries(capasNovas)){
+        if(!dados.jogos.some(j=>j.id===id)) continue;
+        const atual=await gh(`/contents/capas/${id}.jpg?ref=${RAMO}`,{permite404:true});
+        await gh(`/contents/capas/${id}.jpg`,{method:"PUT",body:JSON.stringify({message:`Capa: ${id}`,content:b64,branch:RAMO,...(atual?{sha:atual.sha}:{})})});
+        const j=dados.jogos.find(x=>x.id===id); j.v=Date.now();
+      }
+      const atual=await gh(`/contents/jogos.json?ref=${RAMO}`);
+      const texto=JSON.stringify(dados,null,1)+"\n";
+      await gh(`/contents/jogos.json`,{method:"PUT",body:JSON.stringify({message:`Catálogo atualizado pelo painel (${contarMudancas()} alterações)`,content:b64enc(texto),sha:atual.sha,branch:RAMO})});
+      original=texto; capasNovas={}; render();
+      toast("Publicado! O catálogo dos clientes atualiza em cerca de 1 minuto.","ok");
+    }catch(e){
+      toast("Erro ao publicar: "+e.message+(e.status===401||e.status===403?" (token inválido ou sem permissão)":""),"erro");
+    }finally{ bt.disabled=false; bt.textContent="Publicar"; }
+  };
+  window.addEventListener("beforeunload",e=>{ if(dados&&contarMudancas()){ e.preventDefault(); e.returnValue=""; } });
+
+  // ---------- login / QR ----------
+  $("#qrBtn").onclick=()=>{
+    $("#qr").innerHTML="";
+    const url=location.origin+location.pathname+"#config="+encodeURIComponent(btoa(JSON.stringify({token})));
+    new QRCode($("#qr"),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.L});
+    abrir("#mQr");
+  };
+  $("#sair").onclick=()=>{ if(contarMudancas()&&!confirm("Há alterações não publicadas. Sair mesmo assim?")) return; ls.del(CHAVE); location.reload(); };
+
+  async function entrar(t){
+    token=t; $("#carregando").hidden=false; $("#login").hidden=true;
+    try{
+      await carregar(); ls.set(CHAVE,t);
+      $("#painel").hidden=false; $("#carregando").hidden=true;
+    }catch(e){
+      token=""; ls.del(CHAVE); $("#carregando").hidden=true; $("#login").hidden=false;
+      toast(e.status===401?"Token inválido. Confira e cole de novo.":"Não consegui carregar: "+e.message,"erro");
+    }
+  }
+  $("#entrar").onclick=()=>{ const t=$("#tokenIn").value.trim(); if(t) entrar(t); };
+  $("#tokenIn").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#entrar").click(); });
+
+  const m=location.hash.match(/config=([^&]+)/);
+  if(m){ try{ const c=JSON.parse(atob(decodeURIComponent(m[1]))); if(c.token) ls.set(CHAVE,c.token); }catch(e){} history.replaceState(null,"",location.pathname); }
+  const salvo=ls.get(CHAVE);
+  if(salvo) entrar(salvo); else { $("#carregando").hidden=true; $("#login").hidden=false; }
+})();
+</script>
+</body>
+</html>

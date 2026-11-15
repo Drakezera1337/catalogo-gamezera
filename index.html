@@ -75,6 +75,11 @@ select{background:var(--bg2);border:1px solid var(--line);border-radius:999px;co
 .qtdbox button{width:38px;height:38px;font-size:20px;font-weight:800;color:var(--verde)}
 .qtdbox span{font-weight:800}
 .vazio{text-align:center;color:var(--mut);padding:50px 0}
+.status{position:absolute;left:8px;right:8px;bottom:8px;text-align:center;font-size:12px;font-weight:800;padding:6px;border-radius:8px;letter-spacing:.5px;text-transform:uppercase}
+.s-vend{background:#e0244f;color:#fff}.s-res{background:#ffb020;color:#2a1a00}.s-cheg{background:var(--azul);color:#fff}
+.st-vendido .capa img{filter:grayscale(1) brightness(.55)}.st-reservado .capa img{filter:brightness(.7)}
+.st-vendido .preco{color:var(--mut);text-decoration:line-through}
+.btn.off,.card .btn.off{background:#232850;color:var(--mut);border:0;cursor:default}
 
 /* barra do carrinho */
 .barra{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
@@ -169,29 +174,39 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
   </div>
 </aside>
 
-<script src="jogos.js"></script>
 <script>
-(function(){
-  const L = window.LOJA, J = window.JOGOS;
+(async function(){
   const $ = s => document.querySelector(s);
+  let dados;
+  try {
+    const r = await fetch("jogos.json?t="+Date.now(), {cache:"no-store"});
+    dados = await r.json();
+  } catch(e) {
+    $("#grade").innerHTML = `<p class="vazio">Não foi possível carregar o catálogo. Atualize a página.</p>`; return;
+  }
+  const L = dados.loja, J = dados.jogos;
   const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0});
   const porId = Object.fromEntries(J.map(j=>[j.id,j]));
-  const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  const st = j => j.status || "disponivel";
+  const podePedir = j => st(j)==="disponivel" || st(j)==="chegando";
+  const ORDEM_ST = {disponivel:0, chegando:1, reservado:2, vendido:3};
+  const SELO = {chegando:["Chegando","s-cheg"], reservado:["Reservado","s-res"], vendido:["Vendido","s-vend"]};
+  const capa = j => `capas/${j.id}.jpg${j.v?"?v="+j.v:""}`;
 
   let carrinho = {};
   try { carrinho = JSON.parse(localStorage.getItem("gz_carrinho")||"{}") || {}; } catch(e){}
-  for (const id in carrinho) if (!porId[id]) delete carrinho[id]; else carrinho[id]=Math.min(carrinho[id],porId[id].qtd);
+  for (const id in carrinho) { const j=porId[id]; if (!j || !podePedir(j)) delete carrinho[id]; else carrinho[id]=Math.min(carrinho[id],Math.max(1,j.qtd)); }
   const salvar = () => { try{ localStorage.setItem("gz_carrinho",JSON.stringify(carrinho)); }catch(e){} };
 
   let faixa = "todos";
-  $("#qtdJogos").textContent = J.length;
+  $("#qtdJogos").textContent = J.filter(j=>st(j)==="disponivel").length;
   $("#lnkZap").href = "https://wa.me/"+L.whatsapp;
   $("#lnkInsta").href = "https://instagram.com/"+L.instagram;
 
-  // chips de preço
   const precos = [...new Set(J.map(j=>j.preco).filter(p=>p!=null))].sort((a,b)=>a-b);
-  const chips = [["todos","Todos"],...precos.map(p=>[String(p),brl(p)])];
+  const chips = [["todos","Todos"],["disp","Disponíveis"],...(J.some(j=>st(j)==="chegando")?[["cheg","Chegando"]]:[]),...precos.map(p=>[String(p),brl(p)])];
   $("#chips").innerHTML = chips.map(([v,t])=>`<button class="chip${v==="todos"?" on":""}" data-f="${v}">${t}</button>`).join("");
   $("#chips").addEventListener("click",e=>{
     const b=e.target.closest(".chip"); if(!b) return;
@@ -199,24 +214,28 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
   });
 
   function cardHTML(j){
-    const q = carrinho[j.id]||0;
+    const q = carrinho[j.id]||0, s = st(j), max = Math.max(1,j.qtd);
     const preco = j.preco!=null ? `<div class="preco">${brl(j.preco)}</div>` : `<div class="preco cons">Consultar</div>`;
-    const acao = q===0 ? `<button class="btn" data-add="${j.id}">Quero este</button>`
-      : (j.qtd>1 ? `<div class="qtdbox"><button data-menos="${j.id}" aria-label="Menos">−</button><span>${q}</span><button data-mais="${j.id}" aria-label="Mais">+</button></div>`
-                 : `<button class="btn" data-rm="${j.id}">✓ Na lista</button>`);
-    return `<article class="card${q?" sel":""}" data-id="${j.id}">
-      <div class="capa"><img src="capas/${j.id}.jpg" alt="${esc(j.nome)}" loading="lazy"${j.id==="minecraft"?' class="contain"':""}>
-        <span class="selo">PS4</span>${j.qtd>1?`<span class="estq">${j.qtd} unidades</span>`:""}
+    let acao;
+    if (s==="vendido") acao = `<button class="btn off" disabled>Vendido</button>`;
+    else if (s==="reservado") acao = `<button class="btn off" disabled>Reservado</button>`;
+    else if (q===0) acao = `<button class="btn" data-add="${j.id}">${s==="chegando"?"Quero reservar":"Quero este"}</button>`;
+    else if (max>1) acao = `<div class="qtdbox"><button data-menos="${j.id}" aria-label="Menos">−</button><span>${q}</span><button data-mais="${j.id}" aria-label="Mais">+</button></div>`;
+    else acao = `<button class="btn" data-rm="${j.id}">✓ Na lista</button>`;
+    const selo = SELO[s] ? `<span class="status ${SELO[s][1]}">${SELO[s][0]}</span>` : "";
+    return `<article class="card${q?" sel":""} st-${s}" data-id="${j.id}">
+      <div class="capa"><img src="${capa(j)}" alt="${esc(j.nome)}" loading="lazy" onerror="this.onerror=null;this.src='icon-512.png'"${j.id==="minecraft"?' class="contain"':""}>
+        <span class="selo">PS4</span>${s==="disponivel"&&j.qtd>1?`<span class="estq">${j.qtd} unidades</span>`:""}${selo}
         <span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#062b14" stroke-width="3.5"><path d="m5 12 5 5 9-10"/></svg></span></div>
       <div class="corpo"><div class="nome">${esc(j.nome)}</div>${preco}${acao}</div></article>`;
   }
 
   function lista(){
     const t = norm($("#busca").value.trim()), o=$("#ordem").value;
-    let r = J.filter(j => (!t || norm(j.nome).includes(t)) && (faixa==="todos" || String(j.preco)===faixa));
+    let r = J.filter(j => (!t || norm(j.nome).includes(t)) &&
+      (faixa==="todos" || (faixa==="disp" ? st(j)==="disponivel" : faixa==="cheg" ? st(j)==="chegando" : String(j.preco)===faixa)));
     const pv = j => j.preco==null ? (o==="menor"?1e9:-1) : j.preco;
-    r.sort((a,b)=> o==="menor" ? pv(a)-pv(b)||a.nome.localeCompare(b.nome)
-                : o==="maior" ? pv(b)-pv(a)||a.nome.localeCompare(b.nome) : a.nome.localeCompare(b.nome));
+    r.sort((a,b)=> (ORDEM_ST[st(a)]??0)-(ORDEM_ST[st(b)]??0) || (o==="menor" ? pv(a)-pv(b) : o==="maior" ? pv(b)-pv(a) : 0) || a.nome.localeCompare(b.nome));
     return r;
   }
 
@@ -240,14 +259,14 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
     $("#barraQtd").textContent = `${un} ${un===1?"jogo":"jogos"}${cons?" + consultar":""}`;
     $("#barraTot").textContent = brl(tot);
     $("#gTot").textContent = brl(tot)+(cons?" + consultar":"");
-    $("#itens").innerHTML = it.length ? it.map(({j,q})=>`<div class="item"><img src="capas/${j.id}.jpg" alt="">
-      <div class="n">${esc(j.nome)}<small>${q>1?q+" × ":""}${j.preco!=null?brl(j.preco):"Consultar"}</small></div>
+    $("#itens").innerHTML = it.length ? it.map(({j,q})=>`<div class="item"><img src="${capa(j)}" alt="">
+      <div class="n">${esc(j.nome)}<small>${q>1?q+" × ":""}${j.preco!=null?brl(j.preco):"Consultar"}${st(j)==="chegando"?" · reposição a caminho":""}</small></div>
       <button class="rm" data-rm="${j.id}">Remover</button></div>`).join("") : `<p class="vazio">Nenhum jogo escolhido ainda.</p>`;
     if(!it.length) fecharGaveta();
   }
 
   function mudar(id,d){
-    const j=porId[id]; const q=Math.max(0,Math.min(j.qtd,(carrinho[id]||0)+d));
+    const j=porId[id]; const q=Math.max(0,Math.min(Math.max(1,j.qtd),(carrinho[id]||0)+d));
     if(q) carrinho[id]=q; else delete carrinho[id];
     salvar();
     const card=document.querySelector(`.card[data-id="${id}"]`);
@@ -271,7 +290,7 @@ footer a{color:var(--ciano);text-decoration:none;font-weight:700}
     const {it,tot,cons}=totais(); if(!it.length) return;
     const nome=$("#cliente").value.trim();
     let m = `Olá, Gamezera! ${nome?`Sou ${nome} e `:""}quero estes jogos do catálogo:\n\n`;
-    it.forEach(({j,q})=>{ m+=`• ${q>1?q+"x ":""}${j.nome} — ${j.preco!=null?brl(j.preco*q):"consultar"}\n`; });
+    it.forEach(({j,q})=>{ m+=`• ${q>1?q+"x ":""}${j.nome} — ${j.preco!=null?brl(j.preco*q):"consultar"}${st(j)==="chegando"?" (reserva, reposição a caminho)":""}\n`; });
     m += `\n*Total: ${brl(tot)}${cons?" + jogo(s) a consultar":""}*`;
     window.open("https://wa.me/"+L.whatsapp+"?text="+encodeURIComponent(m),"_blank");
   }

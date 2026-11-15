@@ -1,0 +1,289 @@
+{
+ "loja": {
+  "nome": "Gamezera",
+  "whatsapp": "5522996084127",
+  "instagram": "gamezeraofc"
+ },
+ "jogos": [
+  {
+   "id": "f1-2016",
+   "nome": "F1 2016 (Edição Limitada)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "jedi",
+   "nome": "Star Wars Jedi: Fallen Order",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "spiderman",
+   "nome": "Marvel's Spider-Man",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "minecraft",
+   "nome": "Minecraft (Edição PlayStation 4)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "nfs-payback",
+   "nome": "Need for Speed Payback",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "gt-sport",
+   "nome": "Gran Turismo Sport",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "nfs-hp",
+   "nome": "Need for Speed Hot Pursuit Remastered",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "wrc7",
+   "nome": "WRC 7",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "pcars3",
+   "nome": "Project Cars 3",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "ac-valhalla",
+   "nome": "Assassin's Creed Valhalla",
+   "preco": 120,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "tlou2",
+   "nome": "The Last of Us Part II",
+   "preco": 120,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "days-gone",
+   "nome": "Days Gone",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "cod-aw",
+   "nome": "Call of Duty: Advanced Warfare",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "gta5",
+   "nome": "GTA V",
+   "preco": 100,
+   "qtd": 3,
+   "status": "disponivel"
+  },
+  {
+   "id": "riders",
+   "nome": "Riders Republic (Ultimate Edition)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "cod-iw",
+   "nome": "Call of Duty: Infinite Warfare",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "madmax",
+   "nome": "Mad Max",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "last-guardian",
+   "nome": "The Last Guardian",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "mlb18",
+   "nome": "MLB The Show 18",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "jd2022",
+   "nome": "Just Dance 2022",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "thps5",
+   "nome": "Tony Hawk's Pro Skater 5",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "lego-worlds",
+   "nome": "LEGO Worlds",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "overwatch",
+   "nome": "Overwatch (Origins Edition)",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "golf",
+   "nome": "Everybody's Golf",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "infinity3",
+   "nome": "Disney Infinity 3.0",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "death-stranding",
+   "nome": "Death Stranding",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "fifa18",
+   "nome": "FIFA 18",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "sdb",
+   "nome": "Super Dungeon Bros",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "dreams",
+   "nome": "Dreams",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "madden22",
+   "nome": "Madden NFL 22",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "fc-primal",
+   "nome": "Far Cry Primal",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "ac-syndicate",
+   "nome": "Assassin's Creed Syndicate",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "fc5",
+   "nome": "Far Cry 5",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "witcher3",
+   "nome": "The Witcher 3: Wild Hunt (Complete Edition)",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "ghost",
+   "nome": "Ghost of Tsushima",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "fifa16",
+   "nome": "FIFA 16",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "mafia3",
+   "nome": "Mafia III",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "infamous-ss",
+   "nome": "inFamous Second Son",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "me-andromeda",
+   "nome": "Mass Effect Andromeda",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "gow",
+   "nome": "God of War (2018)",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  }
+ ]
+}
