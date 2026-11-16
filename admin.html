@@ -171,8 +171,9 @@ input:focus,select:focus{border-color:var(--azul)}
       <div id="fPrev" style="display:flex;flex-direction:column;gap:10px"></div>
       <div class="linha" id="fAcoes" hidden>
         <button class="btn" id="fShare" style="flex:1">Compartilhar</button>
-        <button class="btn2" id="fBaixar" style="flex:1">Baixar</button>
+        <button class="btn2" id="fBaixar" style="flex:1">Salvar</button>
       </div>
+      <button class="btn2" id="fPasta" style="font-size:12px;padding:8px" hidden>📁 Trocar pasta onde as fotos são salvas</button>
       <div class="linha" style="justify-content:flex-end"><button class="btn2" data-fechar>Fechar</button></div>
     </div>
   </div>
@@ -451,7 +452,35 @@ input:focus,select:focus{border-color:var(--azul)}
     }catch(e){ toast("Erro ao gerar a foto: "+e.message,"erro"); }
     finally{ bt.disabled=false; bt.textContent="Gerar"; }
   };
+  // pasta padrão (Chrome/Edge no PC): escolhida uma vez, lembrada no IndexedDB
+  const idb = (modo,fn) => new Promise((ok,erro)=>{ const r=indexedDB.open("gz_painel",1);
+    r.onupgradeneeded=()=>r.result.createObjectStore("cfg"); r.onerror=()=>erro(r.error);
+    r.onsuccess=()=>{ try{ const t=r.result.transaction("cfg",modo), q=fn(t.objectStore("cfg")); t.oncomplete=()=>ok(q&&q.result); t.onerror=()=>erro(t.error); }catch(e){ erro(e); } }; });
+  const pastaGet = () => idb("readonly",s=>s.get("pasta")).catch(()=>null);
+  const pastaSet = h => idb("readwrite",s=>s.put(h,"pasta")).catch(()=>{});
+  async function escolherPasta(){
+    const h=await window.showDirectoryPicker({id:"gz-catalogo",mode:"readwrite",startIn:"pictures"});
+    await pastaSet(h); return h;
+  }
+  async function salvarNaPasta(trocar){
+    let h = trocar ? null : await pastaGet();
+    if (h && (await h.queryPermission({mode:"readwrite"}))!=="granted" && (await h.requestPermission({mode:"readwrite"}))!=="granted") h=null;
+    if (!h) { toast("Escolha a pasta D:\\Loja\\jogos\\catalogo (só na primeira vez).","ok"); h=await escolherPasta(); }
+    const dia=new Date().toLocaleDateString("sv-SE");
+    for (const [i,f] of fotos.entries()){
+      const nome=`catalogo-gamezera-${dia}${fotos.length>1?"-"+(i+1):""}.jpg`;
+      const w=await (await h.getFileHandle(nome,{create:true})).createWritable(); await w.write(f.blob); await w.close();
+    }
+    toast(`${fotos.length} foto${fotos.length>1?"s salvas":" salva"} na pasta "${h.name}".`,"ok");
+  }
+  const temPasta = "showDirectoryPicker" in window;
+  $("#fPasta").hidden = !temPasta;
+  $("#fPasta").onclick=async()=>{ try{ await escolherPasta(); toast("Pasta escolhida. As próximas fotos vão para lá.","ok"); }catch(e){} };
   $("#fBaixar").onclick=async()=>{
+    if (temPasta){
+      try { await salvarNaPasta(false); return; }
+      catch(e){ if(e.name==="AbortError") return; toast("Não consegui salvar na pasta: "+e.message,"erro"); return; }
+    }
     for(const f of fotos){ const a=document.createElement("a"); a.href=f.url; a.download=f.nome; document.body.appendChild(a); a.click(); a.remove(); await new Promise(r=>setTimeout(r,400)); }
   };
   $("#fShare").onclick=async()=>{
