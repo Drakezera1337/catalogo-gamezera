@@ -119,6 +119,7 @@ input:focus,select:focus{border-color:var(--azul)}
         <option value="vendido">Vendido</option>
         <option value="chegando">Chegando</option>
         <option value="kit">🎁 Só jogos do kit</option>
+        <option value="forakit">Só jogos fora do kit</option>
       </select>
     </div>
     <p style="color:var(--mut);font-size:12px;margin:2px 0 10px">A posição (1º, 2º…) é a ordem "Mais vendidos" do catálogo. Use ↑ ↓ para mudar. O botão 🎁 Kit marca os jogos que podem ir de brinde com o PS4.</p>
@@ -166,6 +167,7 @@ input:focus,select:focus{border-color:var(--azul)}
       <label>Quais jogos<select id="fQuais">
         <option value="todos">Todos os jogos</option>
         <option value="kit">🎁 Só os jogos do kit (brinde do PS4)</option>
+        <option value="forakit">Só os jogos fora do kit (com preços)</option>
       </select></label>
       <div id="fKitOp" class="form" hidden>
         <label style="flex-direction:row;align-items:center;gap:8px">O cliente escolhe <input type="number" id="fKitN" min="1" step="1" value="3" style="width:70px;padding:6px 8px"> jogos de brinde</label>
@@ -262,7 +264,7 @@ input:focus,select:focus{border-color:var(--azul)}
 
   function render(){
     const t=norm($("#busca").value.trim()), f=$("#filtro").value;
-    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(f==="kit"?j.kit:(j.status||"disponivel")===f)));
+    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(f==="kit"?j.kit:f==="forakit"?!j.kit:(j.status||"disponivel")===f)));
     $("#lista").innerHTML = lista.length ? lista.map(itemHTML).join("") : `<p class="box">Nenhum jogo.</p>`;
     resumo();
   }
@@ -300,7 +302,7 @@ input:focus,select:focus{border-color:var(--azul)}
     const sb=e.target.closest("[data-s]");
     if (sb){ j.status=sb.dataset.s; el.querySelectorAll(".sts button").forEach(b=>b.classList.toggle("on",b===sb)); atualizaItem(id); return; }
     const kb=e.target.closest("[data-kit]");
-    if (kb){ if(j.kit) delete j.kit; else j.kit=true; kb.classList.toggle("on",!!j.kit); atualizaItem(id); if($("#filtro").value==="kit"&&!j.kit) el.remove(); return; }
+    if (kb){ if(j.kit) delete j.kit; else j.kit=true; kb.classList.toggle("on",!!j.kit); atualizaItem(id); if(($("#filtro").value==="kit"&&!j.kit)||($("#filtro").value==="forakit"&&j.kit)) el.remove(); return; }
     const mv=e.target.closest("[data-mv]");
     if (mv){
       const a=dados.jogos.indexOf(j), b=a+(+mv.dataset.mv);
@@ -455,12 +457,12 @@ input:focus,select:focus{border-color:var(--azul)}
       await Promise.all(["italic 900 52px Montserrat","800 28px Montserrat","700 15px Montserrat","500 22px Montserrat","600 20px Montserrat"].map(f=>document.fonts.load(f)));
       const ok={disponivel:true, reservado:$("#fReserv").checked, chegando:$("#fCheg").checked, vendido:false};
       const ordemSt={disponivel:0,chegando:1,reservado:2};
-      const soKit=$("#fQuais").value==="kit";
+      const quais=$("#fQuais").value, soKit=quais==="kit", foraKit=quais==="forakit";
       const kit=soKit?{n:Math.max(1,Math.round(+$("#fKitN").value||3))}:null;
-      const lista=dados.jogos.map((j,i)=>({j,i})).filter(({j})=>ok[j.status||"disponivel"] && (!soKit||j.kit))
+      const lista=dados.jogos.map((j,i)=>({j,i})).filter(({j})=>ok[j.status||"disponivel"] && (soKit?j.kit:foraKit?!j.kit:true))
         .sort((a,b)=>(ordemSt[a.j.status||"disponivel"]-ordemSt[b.j.status||"disponivel"])||a.i-b.i).map(o=>o.j);
-      if(!lista.length){ toast(soKit?"Nenhum jogo marcado como 🎁 Kit (ou todos vendidos).":"Nenhum jogo para mostrar.","erro"); return; }
-      prefixo=soKit?"kit-gamezera":"catalogo-gamezera";
+      if(!lista.length){ toast(soKit?"Nenhum jogo marcado como 🎁 Kit (ou todos vendidos).":foraKit?"Nenhum jogo fora do kit para mostrar.":"Nenhum jogo para mostrar.","erro"); return; }
+      prefixo=soKit?"kit-gamezera":foraKit?"catalogo-fora-kit-gamezera":"catalogo-gamezera";
       const por=+$("#fFormato").value||lista.length, cols=por===12?4:5;
       const pags=[]; for(let i=0;i<lista.length;i+=por) pags.push(lista.slice(i,i+por));
       fotos.forEach(f=>URL.revokeObjectURL(f.url)); fotos=[];
