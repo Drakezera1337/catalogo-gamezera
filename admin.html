@@ -53,6 +53,8 @@ input:focus,select:focus{border-color:var(--azul)}
 .nums input.q{width:62px}
 .mover{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--mut);font-weight:700}
 .mover button{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;font-weight:800}
+.kitb{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--mut)}
+.kitb.on{background:var(--roxo);border-color:var(--roxo);color:#fff}
 .del{margin-left:auto;color:#ff6b8a;font-size:13px;font-weight:700;padding:6px}
 .sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .sts button{border:1px solid var(--line);border-radius:9px;padding:8px 4px;font-size:12px;font-weight:700;color:var(--mut)}
@@ -116,9 +118,10 @@ input:focus,select:focus{border-color:var(--azul)}
         <option value="reservado">Reservado</option>
         <option value="vendido">Vendido</option>
         <option value="chegando">Chegando</option>
+        <option value="kit">🎁 Só jogos do kit</option>
       </select>
     </div>
-    <p style="color:var(--mut);font-size:12px;margin:2px 0 10px">A posição (1º, 2º…) é a ordem "Mais vendidos" do catálogo. Use ↑ ↓ para mudar.</p>
+    <p style="color:var(--mut);font-size:12px;margin:2px 0 10px">A posição (1º, 2º…) é a ordem "Mais vendidos" do catálogo. Use ↑ ↓ para mudar. O botão 🎁 Kit marca os jogos que podem ir de brinde com o PS4.</p>
     <div id="lista"></div>
   </section>
   <p class="box" id="carregando">Carregando…</p>
@@ -145,6 +148,7 @@ input:focus,select:focus{border-color:var(--azul)}
       <label>Status<select id="nStatus">
         <option value="disponivel">Disponível</option><option value="chegando">Chegando</option>
         <option value="reservado">Reservado</option><option value="vendido">Vendido</option></select></label>
+      <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="nKit"> 🎁 Faz parte do kit (brinde do PS4)</label>
       <label>Capa (foto)<input id="nCapa" type="file" accept="image/*"></label>
       <div class="linha" style="justify-content:flex-end">
         <button class="btn2" data-fechar>Cancelar</button>
@@ -159,6 +163,14 @@ input:focus,select:focus{border-color:var(--azul)}
   <div class="box" style="max-width:560px;max-height:92vh;overflow-y:auto">
     <h2>Foto do catálogo com preços</h2>
     <div class="form">
+      <label>Quais jogos<select id="fQuais">
+        <option value="todos">Todos os jogos</option>
+        <option value="kit">🎁 Só os jogos do kit (brinde do PS4)</option>
+      </select></label>
+      <div id="fKitOp" class="form" hidden>
+        <label style="flex-direction:row;align-items:center;gap:8px">O cliente escolhe <input type="number" id="fKitN" min="1" step="1" value="3" style="width:70px;padding:6px 8px"> jogos de brinde</label>
+        <p style="margin:0;font-size:12px">A foto do kit sai sem preços.</p>
+      </div>
       <label>Formato<select id="fFormato">
         <option value="20">Várias fotos de 20 jogos (tamanho de stories, lê bem no WhatsApp)</option>
         <option value="12">Várias fotos de 12 jogos (capas maiores)</option>
@@ -227,7 +239,7 @@ input:focus,select:focus{border-color:var(--azul)}
   function mudou(j){
     const o = JSON.parse(original).jogos.find(x=>x.id===j.id);
     if (!o) return "novo";
-    return (o.nome!==j.nome || o.preco!==j.preco || o.qtd!==j.qtd || (o.status||"disponivel")!==(j.status||"disponivel") || capasNovas[j.id]) ? "mudou" : "";
+    return (o.nome!==j.nome || !!o.kit!==!!j.kit || o.preco!==j.preco || o.qtd!==j.qtd || (o.status||"disponivel")!==(j.status||"disponivel") || capasNovas[j.id]) ? "mudou" : "";
   }
   function capaSrc(j){ return capasNovas[j.id] ? "data:image/jpeg;base64,"+capasNovas[j.id] : `capas/${j.id}.jpg${j.v?"?v="+j.v:""}`; }
 
@@ -241,6 +253,7 @@ input:focus,select:focus{border-color:var(--azul)}
           <label>R$<input type="number" min="0" step="1" inputmode="numeric" value="${j.preco??""}" placeholder="Consultar" data-f="preco"></label>
           <label>Qtd<input class="q" type="number" min="0" step="1" inputmode="numeric" value="${j.qtd}" data-f="qtd"></label>
           <span class="mover"><button data-mv="-1" title="Subir na ordem">↑</button><span>${dados.jogos.indexOf(j)+1}º</span><button data-mv="1" title="Descer na ordem">↓</button></span>
+          <button class="kitb ${j.kit?"on":""}" data-kit title="Marcar como jogo do kit (brinde do PS4)">🎁 Kit</button>
           <button class="del" data-del>Excluir</button>
         </div>
         <div class="sts">${ST.map(([v,t])=>`<button data-s="${v}" class="${s===v?"on":""}">${t}</button>`).join("")}</div>
@@ -249,14 +262,14 @@ input:focus,select:focus{border-color:var(--azul)}
 
   function render(){
     const t=norm($("#busca").value.trim()), f=$("#filtro").value;
-    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(j.status||"disponivel")===f));
+    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(f==="kit"?j.kit:(j.status||"disponivel")===f)));
     $("#lista").innerHTML = lista.length ? lista.map(itemHTML).join("") : `<p class="box">Nenhum jogo.</p>`;
     resumo();
   }
   function resumo(){
     const c={disponivel:0,reservado:0,vendido:0,chegando:0};
     dados.jogos.forEach(j=>c[j.status||"disponivel"]++);
-    $("#resumo").innerHTML = `<span><b>${dados.jogos.length}</b> jogos</span>`+ST.map(([v,t])=>`<span>${t}: <b>${c[v]}</b></span>`).join("");
+    $("#resumo").innerHTML = `<span><b>${dados.jogos.length}</b> jogos</span>`+ST.map(([v,t])=>`<span>${t}: <b>${c[v]}</b></span>`).join("")+`<span>🎁 Kit: <b>${dados.jogos.filter(j=>j.kit).length}</b></span>`;
     const n = contarMudancas();
     $("#barra").hidden = n===0;
     $("#barraMsg").innerHTML = `<b>${n}</b> ${n===1?"alteração":"alterações"} não publicada${n===1?"":"s"}`;
@@ -286,6 +299,8 @@ input:focus,select:focus{border-color:var(--azul)}
     const id=el.dataset.id, j=dados.jogos.find(x=>x.id===id);
     const sb=e.target.closest("[data-s]");
     if (sb){ j.status=sb.dataset.s; el.querySelectorAll(".sts button").forEach(b=>b.classList.toggle("on",b===sb)); atualizaItem(id); return; }
+    const kb=e.target.closest("[data-kit]");
+    if (kb){ if(j.kit) delete j.kit; else j.kit=true; kb.classList.toggle("on",!!j.kit); atualizaItem(id); if($("#filtro").value==="kit"&&!j.kit) el.remove(); return; }
     const mv=e.target.closest("[data-mv]");
     if (mv){
       const a=dados.jogos.indexOf(j), b=a+(+mv.dataset.mv);
@@ -324,13 +339,13 @@ input:focus,select:focus{border-color:var(--azul)}
   // ---------- novo jogo ----------
   const abrir = m => $(m).classList.add("on");
   document.querySelectorAll("[data-fechar]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("on"));
-  $("#novoBtn").onclick=()=>{ ["#nNome","#nPreco","#nCapa"].forEach(s=>$(s).value=""); $("#nQtd").value=1; $("#nStatus").value="disponivel"; abrir("#mNovo"); $("#nNome").focus(); };
+  $("#novoBtn").onclick=()=>{ ["#nNome","#nPreco","#nCapa"].forEach(s=>$(s).value=""); $("#nQtd").value=1; $("#nStatus").value="disponivel"; $("#nKit").checked=false; abrir("#mNovo"); $("#nNome").focus(); };
   $("#nOk").onclick=async()=>{
     const nome=$("#nNome").value.trim(); if(!nome){ toast("Digite o nome do jogo.","erro"); return; }
     let base=norm(nome).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"jogo", id=base, i=2;
     while(dados.jogos.some(j=>j.id===id)) id=base+"-"+(i++);
     const preco=$("#nPreco").value===""?null:Math.max(0,Math.round(+$("#nPreco").value));
-    const j={id,nome,preco,qtd:Math.max(0,Math.round(+$("#nQtd").value||0)),status:$("#nStatus").value};
+    const j={id,nome,preco,qtd:Math.max(0,Math.round(+$("#nQtd").value||0)),status:$("#nStatus").value}; if($("#nKit").checked) j.kit=true;
     if($("#nCapa").files[0]){ try{ capasNovas[id]=await reduzir($("#nCapa").files[0]); j.v=Date.now(); }catch(e){ toast("Não consegui ler a imagem da capa.","erro"); return; } }
     dados.jogos.push(j); $("#mNovo").classList.remove("on");
     $("#busca").value=""; $("#filtro").value=""; render();
@@ -360,7 +375,7 @@ input:focus,select:focus{border-color:var(--azul)}
   window.addEventListener("beforeunload",e=>{ if(dados&&contarMudancas()){ e.preventDefault(); e.returnValue=""; } });
 
   // ---------- foto do catálogo ----------
-  let fotos = []; // [{blob,url,nome}]
+  let fotos = [], prefixo = "catalogo-gamezera"; // [{blob,url,nome}]
   const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0});
   const carregaImg = src => new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>{ if(!i.dataset.fb){ i.dataset.fb=1; i.src="icon-512.png"; } else ok(null); }; i.src=src; });
   function rr(x,X,Y,w,h,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+w,Y,X+w,Y+h,r); x.arcTo(X+w,Y+h,X,Y+h,r); x.arcTo(X,Y+h,X,Y,r); x.arcTo(X,Y,X+w,Y,r); x.closePath(); }
@@ -372,9 +387,10 @@ input:focus,select:focus{border-color:var(--azul)}
     return out;
   }
 
-  async function desenhar(jogos, pag, totPag, totJogos, cols){
+  async function desenhar(jogos, pag, totPag, totJogos, cols, kit){
     const W=1080, M=36, G=18, cw=(W-2*M-(cols-1)*G)/cols, f=cw/187, ch=cw*4/3;
-    const nomeH=Math.round(44*f), precoH=Math.round(40*f), cardH=ch+nomeH+precoH+Math.round(14*f);
+    const comPreco=!kit;
+    const nomeH=Math.round(44*f), precoH=comPreco?Math.round(40*f):0, cardH=ch+nomeH+precoH+Math.round(14*f);
     const rows=Math.ceil(jogos.length/cols), topo=250, rodape=120;
     const H=topo+rows*cardH+(rows-1)*G+rodape;
     const c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
@@ -388,9 +404,10 @@ input:focus,select:focus{border-color:var(--azul)}
     x.textAlign="center"; x.textBaseline="alphabetic";
     x.font="italic 900 52px Montserrat"; const tg=x.createLinearGradient(W/2-220,0,W/2+220,0);
     tg.addColorStop(0,"#33d6ff"); tg.addColorStop(.45,"#2f8cff"); tg.addColorStop(1,"#9b4dff"); x.fillStyle=tg;
-    x.fillText("CATÁLOGO PS4",W/2,212);
+    x.fillText(kit?"KIT PS4 · BRINDES":"CATÁLOGO PS4",W/2,212);
     x.font="500 22px Montserrat"; x.fillStyle="#9aa0c8";
-    x.fillText(`Mídia física · ${totJogos} jogos${totPag>1?` · foto ${pag} de ${totPag}`:""}`,W/2,240);
+    x.fillText(kit?`Escolha ${kit.n} ${kit.n===1?"jogo":"jogos"} de brinde · ${totJogos} opções${totPag>1?` · foto ${pag} de ${totPag}`:""}`
+                  :`Mídia física · ${totJogos} jogos${totPag>1?` · foto ${pag} de ${totPag}`:""}`,W/2,240);
     // capas
     const imgs=await Promise.all(jogos.map(j=>carregaImg(capasNovas[j.id]?"data:image/jpeg;base64,"+capasNovas[j.id]:`capas/${j.id}.jpg${j.v?"?v="+j.v:""}`)));
     jogos.forEach((j,i)=>{
@@ -410,7 +427,7 @@ input:focus,select:focus{border-color:var(--azul)}
         x.fillStyle=s==="reservado"?"#ffb020":"#2f8cff"; rr(x,cx+8*f,cy+ch-38*f,cw-16*f,30*f,7*f); x.fill();
         x.fillStyle=s==="reservado"?"#2a1a00":"#fff"; x.font=`800 ${14*f}px Montserrat`;
         x.fillText(s==="reservado"?"RESERVADO":"CHEGANDO",cx+cw/2,cy+ch-18*f);
-      } else if(j.qtd>1){
+      } else if(j.qtd>1 && !kit){
         x.fillStyle="rgba(0,0,0,.75)"; rr(x,cx+cw-92*f,cy+8*f,84*f,22*f,5*f); x.fill();
         x.fillStyle="#fff"; x.font=`700 ${12*f}px Montserrat`; x.fillText(`${j.qtd} unidades`,cx+cw-50*f,cy+23*f);
       }
@@ -418,17 +435,19 @@ input:focus,select:focus{border-color:var(--azul)}
       x.textAlign="left"; x.fillStyle="#eef0ff"; x.font=`700 ${15*f}px Montserrat`;
       linhas(x,j.nome,cw-20*f,2).forEach((l,k)=>x.fillText(l,cx+10*f,cy+ch+22*f+k*18*f));
       // preço
-      if(j.preco!=null){ x.fillStyle="#33d6ff"; x.font=`800 ${27*f}px Montserrat`; x.fillText(brl(j.preco),cx+10*f,cy+cardH-14*f); }
+      if(!comPreco){}
+      else if(j.preco!=null){ x.fillStyle="#33d6ff"; x.font=`800 ${27*f}px Montserrat`; x.fillText(brl(j.preco),cx+10*f,cy+cardH-14*f); }
       else { x.fillStyle="#9aa0c8"; x.font=`700 ${19*f}px Montserrat`; x.fillText("Consultar",cx+10*f,cy+cardH-16*f); }
     });
     // rodapé
     const fy=H-rodape+30;
     x.textAlign="center";
     x.fillStyle="#25d366"; rr(x,W/2-330,fy,660,62,16); x.fill();
-    x.fillStyle="#062b14"; x.font="800 28px Montserrat"; x.fillText("Peça pelo WhatsApp (22) 99608-4127",W/2,fy+41);
+    x.fillStyle="#062b14"; x.font="800 28px Montserrat"; x.fillText(kit?"Escolha pelo WhatsApp (22) 99608-4127":"Peça pelo WhatsApp (22) 99608-4127",W/2,fy+41);
     return new Promise(ok=>c.toBlob(ok,"image/jpeg",0.92));
   }
 
+  $("#fQuais").onchange=()=>{ $("#fKitOp").hidden=$("#fQuais").value!=="kit"; };
   $("#fotoBtn").onclick=()=>{ $("#fPrev").innerHTML=""; $("#fAcoes").hidden=true; abrir("#mFoto"); };
   $("#fGerar").onclick=async()=>{
     const bt=$("#fGerar"); bt.disabled=true; bt.textContent="Gerando…";
@@ -436,15 +455,18 @@ input:focus,select:focus{border-color:var(--azul)}
       await Promise.all(["italic 900 52px Montserrat","800 28px Montserrat","700 15px Montserrat","500 22px Montserrat","600 20px Montserrat"].map(f=>document.fonts.load(f)));
       const ok={disponivel:true, reservado:$("#fReserv").checked, chegando:$("#fCheg").checked, vendido:false};
       const ordemSt={disponivel:0,chegando:1,reservado:2};
-      const lista=dados.jogos.map((j,i)=>({j,i})).filter(({j})=>ok[j.status||"disponivel"])
+      const soKit=$("#fQuais").value==="kit";
+      const kit=soKit?{n:Math.max(1,Math.round(+$("#fKitN").value||3))}:null;
+      const lista=dados.jogos.map((j,i)=>({j,i})).filter(({j})=>ok[j.status||"disponivel"] && (!soKit||j.kit))
         .sort((a,b)=>(ordemSt[a.j.status||"disponivel"]-ordemSt[b.j.status||"disponivel"])||a.i-b.i).map(o=>o.j);
-      if(!lista.length){ toast("Nenhum jogo para mostrar.","erro"); return; }
+      if(!lista.length){ toast(soKit?"Nenhum jogo marcado como 🎁 Kit (ou todos vendidos).":"Nenhum jogo para mostrar.","erro"); return; }
+      prefixo=soKit?"kit-gamezera":"catalogo-gamezera";
       const por=+$("#fFormato").value||lista.length, cols=por===12?4:5;
       const pags=[]; for(let i=0;i<lista.length;i+=por) pags.push(lista.slice(i,i+por));
       fotos.forEach(f=>URL.revokeObjectURL(f.url)); fotos=[];
       for(let p=0;p<pags.length;p++){
-        const blob=await desenhar(pags[p],p+1,pags.length,lista.length,cols);
-        fotos.push({blob,url:URL.createObjectURL(blob),nome:`catalogo-gamezera${pags.length>1?"-"+(p+1):""}.jpg`});
+        const blob=await desenhar(pags[p],p+1,pags.length,lista.length,cols,kit);
+        fotos.push({blob,url:URL.createObjectURL(blob),nome:`${prefixo}${pags.length>1?"-"+(p+1):""}.jpg`});
       }
       $("#fPrev").innerHTML=fotos.map(f=>`<img src="${f.url}" style="width:100%;border-radius:10px;border:1px solid var(--line)">`).join("");
       $("#fAcoes").hidden=false;
@@ -468,7 +490,7 @@ input:focus,select:focus{border-color:var(--azul)}
     if (!h) { toast("Escolha a pasta D:\\Loja\\jogos\\catalogo (só na primeira vez).","ok"); h=await escolherPasta(); }
     const dia=new Date().toLocaleDateString("sv-SE");
     for (const [i,f] of fotos.entries()){
-      const nome=`catalogo-gamezera-${dia}${fotos.length>1?"-"+(i+1):""}.jpg`;
+      const nome=`${prefixo}-${dia}${fotos.length>1?"-"+(i+1):""}.jpg`;
       const w=await (await h.getFileHandle(nome,{create:true})).createWritable(); await w.write(f.blob); await w.close();
     }
     toast(`${fotos.length} foto${fotos.length>1?"s salvas":" salva"} na pasta "${h.name}".`,"ok");
