@@ -60,7 +60,8 @@
    "nome": "FIFA 18",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "cod-aw",
@@ -81,14 +82,16 @@
    "nome": "Overwatch (Origins Edition)",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "fifa16",
    "nome": "FIFA 16",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "cod-iw",
@@ -130,14 +133,16 @@
    "nome": "Mafia III",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "death-stranding",
    "nome": "Death Stranding",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "nfs-payback",
@@ -165,21 +170,24 @@
    "nome": "Assassin's Creed Syndicate",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "fc-primal",
    "nome": "Far Cry Primal",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "madden22",
    "nome": "Madden NFL 22",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "riders",
@@ -193,35 +201,40 @@
    "nome": "Mad Max",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "lego-worlds",
    "nome": "LEGO Worlds",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "infinity3",
    "nome": "Disney Infinity 3.0",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "last-guardian",
    "nome": "The Last Guardian",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "jd2022",
    "nome": "Just Dance 2022",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "nfs-hp",
@@ -242,14 +255,16 @@
    "nome": "MLB The Show 18",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "golf",
    "nome": "Everybody's Golf",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "pcars3",
@@ -263,7 +278,8 @@
    "nome": "Dreams",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "wrc7",
@@ -277,14 +293,16 @@
    "nome": "Tony Hawk's Pro Skater 5",
    "preco": 60,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   },
   {
    "id": "sdb",
    "nome": "Super Dungeon Bros",
    "preco": 80,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "kit": true
   }
  ]
 }
