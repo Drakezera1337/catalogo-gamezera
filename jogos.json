@@ -131,6 +131,13 @@
    "status": "disponivel"
   },
   {
+   "id": "dying-light",
+   "nome": "Dying Light",
+   "preco": 80,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
    "id": "mafia3",
    "nome": "Mafia III",
    "preco": 80,
@@ -231,6 +238,13 @@
    "qtd": 1,
    "status": "disponivel",
    "kit": true
+  },
+  {
+   "id": "jd2016",
+   "nome": "Just Dance 2016",
+   "preco": 60,
+   "qtd": 1,
+   "status": "disponivel"
   },
   {
    "id": "jd2022",
