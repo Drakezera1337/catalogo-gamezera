@@ -374,7 +374,7 @@ input:focus,select:focus{border-color:var(--azul)}
   async function desenhar(jogos, pag, totPag, totJogos, cols){
     const W=1080, M=36, G=18, cw=(W-2*M-(cols-1)*G)/cols, f=cw/187, ch=cw*4/3;
     const nomeH=Math.round(44*f), precoH=Math.round(40*f), cardH=ch+nomeH+precoH+Math.round(14*f);
-    const rows=Math.ceil(jogos.length/cols), topo=250, rodape=150;
+    const rows=Math.ceil(jogos.length/cols), topo=250, rodape=120;
     const H=topo+rows*cardH+(rows-1)*G+rodape;
     const c=document.createElement("canvas"); c.width=W; c.height=H; const x=c.getContext("2d");
     // fundo
@@ -425,8 +425,6 @@ input:focus,select:focus{border-color:var(--azul)}
     x.textAlign="center";
     x.fillStyle="#25d366"; rr(x,W/2-330,fy,660,62,16); x.fill();
     x.fillStyle="#062b14"; x.font="800 28px Montserrat"; x.fillText("Peça pelo WhatsApp (22) 99608-4127",W/2,fy+41);
-    x.fillStyle="#9aa0c8"; x.font="600 20px Montserrat";
-    x.fillText("@gamezeraofc  ·  drakezera1337.github.io/catalogo-gamezera",W/2,fy+100);
     return new Promise(ok=>c.toBlob(ok,"image/jpeg",0.92));
   }
 
