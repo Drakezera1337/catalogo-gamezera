@@ -15,7 +15,7 @@
   {
    "id": "rdr2",
    "nome": "Red Dead Redemption 2",
-   "preco": null,
+   "preco": 120,
    "qtd": 2,
    "status": "disponivel"
   },
@@ -29,7 +29,7 @@
   {
    "id": "uncharted4",
    "nome": "Uncharted 4: A Thief's End",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -44,7 +44,7 @@
   {
    "id": "gow-ragnarok",
    "nome": "God of War Ragnarök",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -88,14 +88,14 @@
   {
    "id": "fifa19",
    "nome": "FIFA 19",
-   "preco": null,
+   "preco": 80,
    "qtd": 2,
    "status": "disponivel"
   },
   {
    "id": "fifa20",
    "nome": "FIFA 20",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -109,14 +109,14 @@
   {
    "id": "cod-ww2",
    "nome": "Call of Duty: WWII",
-   "preco": null,
+   "preco": 100,
    "qtd": 2,
    "status": "disponivel"
   },
   {
    "id": "bf1",
    "nome": "Battlefield 1",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -175,7 +175,7 @@
   {
    "id": "tlou-rem",
    "nome": "The Last of Us Remasterizado",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel",
    "semfoto": true
@@ -183,7 +183,7 @@
   {
    "id": "uncharted-ndc",
    "nome": "Uncharted: The Nathan Drake Collection",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -227,21 +227,21 @@
   {
    "id": "nioh",
    "nome": "Nioh",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "a-way-out",
    "nome": "A Way Out",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "pes2021",
    "nome": "eFootball PES 2021 Season Update",
-   "preco": null,
+   "preco": 350,
    "qtd": 1,
    "status": "disponivel",
    "semfoto": true
@@ -249,28 +249,28 @@
   {
    "id": "pes2020",
    "nome": "eFootball PES 2020",
-   "preco": null,
+   "preco": 120,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "pes2018",
    "nome": "PES 2018 (Pro Evolution Soccer)",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "wwe2k19",
    "nome": "WWE 2K19",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "f1-2018",
    "nome": "F1 2018 (Edição Headline)",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
