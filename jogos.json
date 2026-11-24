@@ -177,7 +177,8 @@
    "nome": "The Last of Us Remasterizado",
    "preco": null,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "semfoto": true
   },
   {
    "id": "uncharted-ndc",
@@ -242,7 +243,8 @@
    "nome": "eFootball PES 2021 Season Update",
    "preco": null,
    "qtd": 1,
-   "status": "disponivel"
+   "status": "disponivel",
+   "semfoto": true
   },
   {
    "id": "pes2020",

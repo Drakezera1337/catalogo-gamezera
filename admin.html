@@ -54,6 +54,9 @@ input:focus,select:focus{border-color:var(--azul)}
 .mover{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--mut);font-weight:700}
 .mover button{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;font-weight:800}
 .kitb{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--mut)}
+.semp{font-size:11px;font-weight:800;color:#2a1a00;background:var(--amar);border-radius:6px;padding:3px 7px;white-space:nowrap}
+.semf{font-size:11px;font-weight:800;color:#fff;background:var(--verm);border-radius:6px;padding:3px 7px;white-space:nowrap}
+.jogo.sempreco .campos .nums input[data-f=preco]{border-color:var(--amar)}
 .kitb.on{background:var(--roxo);border-color:var(--roxo);color:#fff}
 .del{margin-left:auto;color:#ff6b8a;font-size:13px;font-weight:700;padding:6px}
 .sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -118,6 +121,8 @@ input:focus,select:focus{border-color:var(--azul)}
         <option value="reservado">Reservado</option>
         <option value="vendido">Vendido</option>
         <option value="chegando">Chegando</option>
+        <option value="sempreco">💲 Sem preço</option>
+        <option value="semfoto">📷 Sem foto oficial</option>
         <option value="kit">🎁 Só jogos do kit</option>
         <option value="forakit">Só jogos fora do kit</option>
       </select>
@@ -247,10 +252,10 @@ input:focus,select:focus{border-color:var(--azul)}
 
   function itemHTML(j){
     const s=j.status||"disponivel";
-    return `<div class="jogo ${mudou(j)}" data-id="${j.id}">
+    return `<div class="jogo ${mudou(j)}${j.preco==null?" sempreco":""}" data-id="${j.id}">
       <div class="thumb"><img src="${capaSrc(j)}" alt="" onerror="this.onerror=null;this.src='icon-192.png'"><label>Trocar<input type="file" accept="image/*" data-capa></label></div>
       <div class="campos">
-        <input class="nome" value="${esc(j.nome)}" data-f="nome" aria-label="Nome">
+        <div style="display:flex;gap:8px;align-items:center"><input class="nome" style="flex:1;min-width:0" value="${esc(j.nome)}" data-f="nome" aria-label="Nome"><span class="semp"${j.preco==null?"":" hidden"}>Sem preço</span><span class="semf"${j.semfoto?"":" hidden"}>Sem foto</span></div>
         <div class="nums">
           <label>R$<input type="number" min="0" step="1" inputmode="numeric" value="${j.preco??""}" placeholder="Consultar" data-f="preco"></label>
           <label>Qtd<input class="q" type="number" min="0" step="1" inputmode="numeric" value="${j.qtd}" data-f="qtd"></label>
@@ -264,14 +269,16 @@ input:focus,select:focus{border-color:var(--azul)}
 
   function render(){
     const t=norm($("#busca").value.trim()), f=$("#filtro").value;
-    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(f==="kit"?j.kit:f==="forakit"?!j.kit:(j.status||"disponivel")===f)));
+    const lista = dados.jogos.filter(j=>(!t||norm(j.nome).includes(t)) && (!f||(f==="kit"?j.kit:f==="forakit"?!j.kit:f==="sempreco"?j.preco==null:f==="semfoto"?j.semfoto:(j.status||"disponivel")===f)));
     $("#lista").innerHTML = lista.length ? lista.map(itemHTML).join("") : `<p class="box">Nenhum jogo.</p>`;
     resumo();
   }
   function resumo(){
     const c={disponivel:0,reservado:0,vendido:0,chegando:0};
     dados.jogos.forEach(j=>c[j.status||"disponivel"]++);
-    $("#resumo").innerHTML = `<span><b>${dados.jogos.length}</b> jogos</span>`+ST.map(([v,t])=>`<span>${t}: <b>${c[v]}</b></span>`).join("")+`<span>🎁 Kit: <b>${dados.jogos.filter(j=>j.kit).length}</b></span>`;
+    $("#resumo").innerHTML = `<span><b>${dados.jogos.length}</b> jogos</span>`+ST.map(([v,t])=>`<span>${t}: <b>${c[v]}</b></span>`).join("")+`<span>🎁 Kit: <b>${dados.jogos.filter(j=>j.kit).length}</b></span>`
+      +(()=>{ const n=dados.jogos.filter(j=>j.preco==null&&(j.status||"disponivel")!=="vendido").length; return n?`<span style="border-color:var(--amar);color:var(--amar)">💲 Sem preço: <b>${n}</b></span>`:""; })()
+      +(()=>{ const n=dados.jogos.filter(j=>j.semfoto).length; return n?`<span style="border-color:var(--verm);color:#ff6b8a">📷 Sem foto: <b>${n}</b></span>`:""; })();
     const n = contarMudancas();
     $("#barra").hidden = n===0;
     $("#barraMsg").innerHTML = `<b>${n}</b> ${n===1?"alteração":"alterações"} não publicada${n===1?"":"s"}`;
@@ -292,7 +299,8 @@ input:focus,select:focus{border-color:var(--azul)}
     const f=e.target.dataset.f; if(!f) return;
     const id=e.target.closest(".jogo").dataset.id, j=dados.jogos.find(x=>x.id===id);
     if (f==="nome") j.nome=e.target.value;
-    else if (f==="preco") j.preco = e.target.value==="" ? null : Math.max(0,Math.round(+e.target.value));
+    else if (f==="preco"){ j.preco = e.target.value==="" ? null : Math.max(0,Math.round(+e.target.value));
+      const el=e.target.closest(".jogo"); el.classList.toggle("sempreco",j.preco==null); el.querySelector(".semp").hidden=j.preco!=null; }
     else if (f==="qtd") j.qtd = Math.max(0,Math.round(+e.target.value||0));
     atualizaItem(id);
   });
@@ -322,6 +330,7 @@ input:focus,select:focus{border-color:var(--azul)}
     const id=e.target.closest(".jogo").dataset.id;
     try { capasNovas[id]=await reduzir(e.target.files[0]); } catch(err){ toast("Não consegui ler essa imagem.","erro"); return; }
     e.target.closest(".jogo").querySelector(".thumb img").src="data:image/jpeg;base64,"+capasNovas[id];
+    const jj=dados.jogos.find(x=>x.id===id); if(jj.semfoto){ delete jj.semfoto; e.target.closest(".jogo").querySelector(".semf").hidden=true; }
     atualizaItem(id);
   });
   $("#busca").addEventListener("input",render);
