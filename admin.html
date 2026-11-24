@@ -470,7 +470,8 @@ input:focus,select:focus{border-color:var(--azul)}
         const blob=await desenhar(pags[p],p+1,pags.length,lista.length,cols,kit);
         fotos.push({blob,url:URL.createObjectURL(blob),nome:`${prefixo}${pags.length>1?"-"+(p+1):""}.jpg`});
       }
-      $("#fPrev").innerHTML=fotos.map(f=>`<img src="${f.url}" style="width:100%;border-radius:10px;border:1px solid var(--line)">`).join("");
+      $("#fPrev").innerHTML=fotos.map((f,i)=>`<div style="display:flex;flex-direction:column;gap:6px"><img src="${f.url}" style="width:100%;border-radius:10px;border:1px solid var(--line)">
+        <button class="btn2" data-copiar="${i}">📋 Copiar${fotos.length>1?` foto ${i+1}`:" foto"}</button></div>`).join("");
       $("#fAcoes").hidden=false;
       $("#fShare").hidden=!(navigator.canShare && navigator.canShare({files:[new File([fotos[0].blob],fotos[0].nome,{type:"image/jpeg"})]}));
     }catch(e){ toast("Erro ao gerar a foto: "+e.message,"erro"); }
@@ -507,6 +508,22 @@ input:focus,select:focus{border-color:var(--azul)}
     }
     for(const f of fotos){ const a=document.createElement("a"); a.href=f.url; a.download=f.nome; document.body.appendChild(a); a.click(); a.remove(); await new Promise(r=>setTimeout(r,400)); }
   };
+  // copiar para a área de transferência (só PNG é aceito pelos navegadores)
+  const paraPng = blob => new Promise((ok,erro)=>{ const i=new Image(), u=URL.createObjectURL(blob);
+    i.onload=()=>{ const c=document.createElement("canvas"); c.width=i.naturalWidth; c.height=i.naturalHeight; c.getContext("2d").drawImage(i,0,0); URL.revokeObjectURL(u); c.toBlob(b=>b?ok(b):erro(new Error("falha ao converter")),"image/png"); };
+    i.onerror=erro; i.src=u; });
+  $("#fPrev").addEventListener("click",async e=>{
+    const b=e.target.closest("[data-copiar]"); if(!b) return;
+    const f=fotos[+b.dataset.copiar]; if(!f) return;
+    if(!(navigator.clipboard&&window.ClipboardItem)){ toast("Este navegador não deixa copiar imagens. Use Salvar ou Compartilhar.","erro"); return; }
+    const txt=b.textContent;
+    try{
+      if(!f.png) f.png=paraPng(f.blob);
+      await navigator.clipboard.write([new ClipboardItem({"image/png":f.png})]);
+      b.textContent="✓ Copiada!"; toast("Foto copiada. É só colar (Ctrl+V) no WhatsApp.","ok");
+      setTimeout(()=>b.textContent=txt,2000);
+    }catch(err){ toast("Não consegui copiar: "+err.message,"erro"); }
+  });
   $("#fShare").onclick=async()=>{
     try{ await navigator.share({files:fotos.map(f=>new File([f.blob],f.nome,{type:"image/jpeg"})),title:"Catálogo Gamezera"}); }
     catch(e){ if(e.name!=="AbortError") toast("Não deu para compartilhar. Use Baixar.","erro"); }
