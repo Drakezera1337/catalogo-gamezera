@@ -13,9 +13,23 @@
    "status": "disponivel"
   },
   {
+   "id": "rdr2",
+   "nome": "Red Dead Redemption 2",
+   "preco": null,
+   "qtd": 2,
+   "status": "disponivel"
+  },
+  {
    "id": "spiderman",
    "nome": "Marvel's Spider-Man",
    "preco": 100,
+   "qtd": 2,
+   "status": "disponivel"
+  },
+  {
+   "id": "uncharted4",
+   "nome": "Uncharted 4: A Thief's End",
+   "preco": null,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -23,9 +37,16 @@
    "id": "gow",
    "nome": "God of War (2018)",
    "preco": 80,
-   "qtd": 1,
+   "qtd": 2,
    "status": "disponivel",
    "kit": true
+  },
+  {
+   "id": "gow-ragnarok",
+   "nome": "God of War Ragnarök",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
   },
   {
    "id": "witcher3",
@@ -38,7 +59,7 @@
    "id": "ghost",
    "nome": "Ghost of Tsushima",
    "preco": 100,
-   "qtd": 1,
+   "qtd": 2,
    "status": "disponivel"
   },
   {
@@ -60,14 +81,42 @@
    "id": "fifa18",
    "nome": "FIFA 18",
    "preco": 80,
-   "qtd": 1,
+   "qtd": 2,
    "status": "disponivel",
    "kit": true
+  },
+  {
+   "id": "fifa19",
+   "nome": "FIFA 19",
+   "preco": null,
+   "qtd": 2,
+   "status": "disponivel"
+  },
+  {
+   "id": "fifa20",
+   "nome": "FIFA 20",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
   },
   {
    "id": "cod-aw",
    "nome": "Call of Duty: Advanced Warfare",
    "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "cod-ww2",
+   "nome": "Call of Duty: WWII",
+   "preco": null,
+   "qtd": 2,
+   "status": "disponivel"
+  },
+  {
+   "id": "bf1",
+   "nome": "Battlefield 1",
+   "preco": null,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -90,7 +139,7 @@
    "id": "fifa16",
    "nome": "FIFA 16",
    "preco": 80,
-   "qtd": 1,
+   "qtd": 2,
    "status": "disponivel",
    "kit": true
   },
@@ -98,7 +147,7 @@
    "id": "cod-iw",
    "nome": "Call of Duty: Infinite Warfare",
    "preco": 100,
-   "qtd": 1,
+   "qtd": 2,
    "status": "disponivel"
   },
   {
@@ -120,6 +169,20 @@
    "id": "tlou2",
    "nome": "The Last of Us Part II",
    "preco": 120,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "tlou-rem",
+   "nome": "The Last of Us Remasterizado",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "uncharted-ndc",
+   "nome": "Uncharted: The Nathan Drake Collection",
+   "preco": null,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -157,6 +220,55 @@
    "id": "nfs-payback",
    "nome": "Need for Speed Payback",
    "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "nioh",
+   "nome": "Nioh",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "a-way-out",
+   "nome": "A Way Out",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "pes2021",
+   "nome": "eFootball PES 2021 Season Update",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "pes2020",
+   "nome": "eFootball PES 2020",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "pes2018",
+   "nome": "PES 2018 (Pro Evolution Soccer)",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "wwe2k19",
+   "nome": "WWE 2K19",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "f1-2018",
+   "nome": "F1 2018 (Edição Headline)",
+   "preco": null,
    "qtd": 1,
    "status": "disponivel"
   },
