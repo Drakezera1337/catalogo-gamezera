@@ -178,7 +178,7 @@
    "preco": 80,
    "qtd": 1,
    "status": "disponivel",
-   "semfoto": true
+   "v": 1795565348321
   },
   {
    "id": "uncharted-ndc",
@@ -244,7 +244,7 @@
    "preco": 350,
    "qtd": 1,
    "status": "disponivel",
-   "semfoto": true
+   "v": 1795565349803
   },
   {
    "id": "pes2020",
