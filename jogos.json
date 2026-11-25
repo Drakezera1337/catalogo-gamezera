@@ -20,17 +20,17 @@
    "status": "disponivel"
   },
   {
+   "id": "gow-ragnarok",
+   "nome": "God of War Ragnarök",
+   "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
    "id": "spiderman",
    "nome": "Marvel's Spider-Man",
    "preco": 100,
    "qtd": 2,
-   "status": "disponivel"
-  },
-  {
-   "id": "uncharted4",
-   "nome": "Uncharted 4: A Thief's End",
-   "preco": 80,
-   "qtd": 1,
    "status": "disponivel"
   },
   {
@@ -42,16 +42,9 @@
    "kit": true
   },
   {
-   "id": "gow-ragnarok",
-   "nome": "God of War Ragnarök",
-   "preco": 100,
-   "qtd": 1,
-   "status": "disponivel"
-  },
-  {
-   "id": "witcher3",
-   "nome": "The Witcher 3: Wild Hunt (Complete Edition)",
-   "preco": 100,
+   "id": "uncharted4",
+   "nome": "Uncharted 4: A Thief's End",
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -60,6 +53,13 @@
    "nome": "Ghost of Tsushima",
    "preco": 100,
    "qtd": 2,
+   "status": "disponivel"
+  },
+  {
+   "id": "witcher3",
+   "nome": "The Witcher 3: Wild Hunt (Complete Edition)",
+   "preco": 100,
+   "qtd": 1,
    "status": "disponivel"
   },
   {
