@@ -89,7 +89,7 @@
    "id": "fifa19",
    "nome": "FIFA 19",
    "preco": 80,
-   "qtd": 2,
+   "qtd": 3,
    "status": "disponivel"
   },
   {
@@ -111,6 +111,13 @@
    "nome": "Call of Duty: WWII",
    "preco": 100,
    "qtd": 2,
+   "status": "disponivel"
+  },
+  {
+   "id": "cod-bo3",
+   "nome": "Call of Duty: Black Ops III",
+   "preco": null,
+   "qtd": 1,
    "status": "disponivel"
   },
   {
@@ -221,6 +228,13 @@
    "id": "nfs-payback",
    "nome": "Need for Speed Payback",
    "preco": 100,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "nfs-rivals",
+   "nome": "Need for Speed Rivals",
+   "preco": null,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -338,6 +352,13 @@
    "kit": true
   },
   {
+   "id": "lego-movie",
+   "nome": "LEGO Movie Videogame",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
    "id": "infinity3",
    "nome": "Disney Infinity 3.0",
    "preco": 80,
@@ -360,6 +381,20 @@
    "qtd": 1,
    "status": "disponivel",
    "kit": true
+  },
+  {
+   "id": "jd2017",
+   "nome": "Just Dance 2017",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
+  },
+  {
+   "id": "jd2019",
+   "nome": "Just Dance 2019",
+   "preco": null,
+   "qtd": 1,
+   "status": "disponivel"
   },
   {
    "id": "jd2022",
