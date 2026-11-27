@@ -116,7 +116,7 @@
   {
    "id": "cod-bo3",
    "nome": "Call of Duty: Black Ops III",
-   "preco": null,
+   "preco": 8,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -234,7 +234,7 @@
   {
    "id": "nfs-rivals",
    "nome": "Need for Speed Rivals",
-   "preco": null,
+   "preco": 100,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -354,7 +354,7 @@
   {
    "id": "lego-movie",
    "nome": "LEGO Movie Videogame",
-   "preco": null,
+   "preco": 80,
    "qtd": 1,
    "status": "disponivel"
   },
@@ -385,14 +385,14 @@
   {
    "id": "jd2017",
    "nome": "Just Dance 2017",
-   "preco": null,
+   "preco": 6,
    "qtd": 1,
    "status": "disponivel"
   },
   {
    "id": "jd2019",
    "nome": "Just Dance 2019",
-   "preco": null,
+   "preco": 60,
    "qtd": 1,
    "status": "disponivel"
   },
